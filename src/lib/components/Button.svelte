@@ -1,0 +1,36 @@
+<script lang="ts">
+	let { onClick, mode='success', type='button', disabled=false }:
+		{
+			onClick?: () => any;
+			mode?:'success' | 'danger' | 'peace';
+			type: 'button'  | 'submit' | 'reset' | null | undefined;
+			disabled?: boolean;
+		} = $props();
+
+</script>
+<style>
+		button {
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        color: #fff;
+		}
+    .success {
+        background-color: #007bff;
+
+    }
+		.success:disabled {
+        background-color: #6c757d;
+		}
+
+		.danger {
+				background-color: #dc3545;
+		}
+
+		.peace {
+				background-color: #07ab07;
+		}
+</style>
+<button class="{mode}" {type} on:click={onClick} {disabled}><slot /></button>
