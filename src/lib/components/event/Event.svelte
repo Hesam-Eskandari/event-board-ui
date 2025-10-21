@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '../Button.svelte';
 	import { type EventModel } from '$lib/entities/event';
+	import { calcDuration, formatDateTime } from '$lib/utils/dateTime';
 	let {
 		onDelete,
 		onEdit,
@@ -12,6 +13,7 @@
 		event: EventModel;
 
 	} = $props();
+	const duration = calcDuration(event.start, event.end);
 
 
 </script>
@@ -37,7 +39,7 @@
         display: flex;
         flex-direction: column;
         margin: 0 1rem;
-        max-width: 50%;
+        max-width: 100%;
         height: 100%;
     }
 
@@ -46,10 +48,16 @@
 
 <div class="card">
 	<div class="content">
-		<div>{event.title}</div>
-		<div>Participant: {event.participant.firstname} {event.participant.lastname}</div>
-		<div>Category: {event.category.title}</div>
-		<Button type="button" onClick="{() => onEdit(event)}">Edit</Button>
-		<Button type="button" onClick="{() => onDelete(event)}" mode="danger">Delete</Button>
+		<h2>{event.title}</h2>
+		<div><b>Participant</b>: {event.participant.firstname} {event.participant.lastname}</div>
+		<div><b>Category</b>: {event.category.title}</div>
+		<div><b>Start</b>: {formatDateTime(event.start)}</div>
+		<div><b>End</b>: {formatDateTime(event.end)}</div>
+		<div><b>Duration</b>: {duration}</div>
+		<div>
+			<Button type="button" onClick="{() => onEdit(event)}">Edit</Button>
+			<Button type="button" onClick="{() => onDelete(event)}" mode="danger">Delete</Button>
+		</div>
+
 	</div>
 </div>

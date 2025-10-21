@@ -5,20 +5,24 @@
 	import type { CategoryModel } from '$lib/entities/category';
 	import type { ParticipantModel } from '$lib/entities/participant';
 	let { onClose, onCancel, onAdd, disabled, categories, participants } = $props();
-	let title = '';
-	let categoryId = categories?.length > 0 ? categories[0].id : '';
-	let participantId = participants?.length > 0 ? participants[0].id : '';
+	let title = $state('');
+	let startStr = $state('');
+	let endStr = $state('');
+	let categoryId = $state(categories?.length > 0 ? categories[0].id : '');
+	let participantId = $state(participants?.length > 0 ? participants[0].id : '');
+	const category = $derived(categories.find((category: CategoryModel) => category.id === categoryId));
+	const participant = $derived(participants.find((participant: ParticipantModel) => participant.id === participantId));
+	const start = $derived(new Date(startStr));
+	const end = $derived(new Date(endStr));
+
+	const isValid = $derived(title.trim().length > 0 && !!category && !!participant && start?.getTime() < end?.getTime());
 
 	function onAddEvent() {
 		const event: EventModel = {
-			category: categories.find((category: CategoryModel) => category.id === categoryId),
-			participant: participants.find((participant: ParticipantModel) => participant.id === participantId),
-			start: new Date(),
-			end: new Date(
-				new Date().setHours(
-					new Date().getHours() + 1
-				)
-			),
+			category,
+			participant,
+			start,
+			end,
 			title,
 			id: null
 		};
@@ -51,6 +55,14 @@
 				{/each}/}
 			</select>
 		</div>
-		<Button type="submit" mode="peace" {disabled}>Add</Button>
+		<div>
+			<label for="start">Start:</label>
+			<input type="datetime-local" name="start" id="start" bind:value="{startStr}" />
+		</div>
+		<div>
+			<label for="end">End:</label>
+			<input type="datetime-local" name="end" id="end" bind:value="{endStr}" />
+		</div>
+		<Button type="submit" mode="peace" disabled="{!isValid}">Add</Button>
 	</form>
 </Modal>

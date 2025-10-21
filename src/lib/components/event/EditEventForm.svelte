@@ -4,25 +4,24 @@
 	import { type EventModel } from '$lib/entities/event';
 	import type { CategoryModel } from '$lib/entities/category';
 	import type { ParticipantModel } from '$lib/entities/participant';
+	import { formatDateTime } from '$lib/utils/dateTime';
 	let { onClose, onCancel, onEdit, categories, participants, event } = $props();
 	let title = $state(event.title);
 	let categoryId = $state(event.category.id);
 	let participantId = $state(event.participant.id);
 	const category = $derived(categories.find((category: CategoryModel) => category.id === categoryId));
 	const participant = $derived(participants.find((participant: ParticipantModel) => participant.id === participantId));
-	const isValid = $derived(category.id !== event.category.id || participant.id !== event.participant.id || title !== event.title);
+	let start = $state(event.start);
+	let end = $state(event.end);
+	const isValid = $derived((category.id !== event.category.id || participant.id !== event.participant.id || title !== event.title) && title.trim().length > 0 && start.getTime() < end.getTime());
 
 	function onEditEvent() {
 		const eventNew: EventModel = {
 			...event,
 			category,
 			participant,
-			start: new Date(),
-			end: new Date(
-				new Date().setHours(
-					new Date().getHours() + 1
-				)
-			),
+			start,
+			end,
 			title,
 		};
 		onEdit(eventNew);
@@ -53,6 +52,14 @@
 					<option value="No Participant">No participant found</option>
 				{/each}/}
 			</select>
+		</div>
+		<div>
+			<label for="start">Start:</label>
+			<input type="datetime-local" name="start" id="start" bind:value="{start}" />
+		</div>
+		<div>
+			<label for="end">End:</label>
+			<input type="datetime-local" name="end" id="end" bind:value="{end}" />
 		</div>
 		<Button type="submit" mode="success" disabled="{!isValid}">Update</Button>
 	</form>

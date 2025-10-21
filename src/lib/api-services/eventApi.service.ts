@@ -15,7 +15,12 @@ export class EventApiService implements EventService {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
-						const data: EventModel = await res.json();
+						const dataDto = await res.json();
+						const data = {
+							...dataDto,
+							start: new Date(dataDto.start),
+							end: new Date(dataDto.end)
+						}
 						run({ data, error: null, status: 'success' });
 					})
 					.catch((err: Error) => {
@@ -81,7 +86,12 @@ export class EventApiService implements EventService {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
-						const data: EventModel[] = await res.json();
+						const dataDto: EventModel[] = await res.json();
+						const data = dataDto.map(d => ({
+							...d,
+							start: new Date(d.start),
+							end: new Date(d.end)
+						}));
 						run({ data, error: null, status: 'success' });
 					})
 					.catch((err) => {

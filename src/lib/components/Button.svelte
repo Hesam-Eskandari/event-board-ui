@@ -22,7 +22,7 @@
 
     }
 		.success:disabled {
-        background-color: #6c757d;
+        background-color: #7799bb;
 		}
 
 		.danger {
@@ -31,6 +31,10 @@
 
 		.peace {
 				background-color: #07ab07;
+		}
+
+		.peace:disabled {
+				background-color: #77bb77;
 		}
 </style>
 <button class="{mode}" {type} on:click={onClick} {disabled}><slot /></button>

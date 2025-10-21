@@ -67,7 +67,9 @@
 	</div>
 	<div class="content">
 		<div>{participant.firstname} {participant.lastname}</div>
-		<Button type="button" onClick="{() => onEdit(participant)}">Edit</Button>
-		<Button type="button" onClick="{() => onDelete(participant)}" mode="danger">Delete</Button>
+		<div>
+			<Button type="button" onClick="{() => onEdit(participant)}">Edit</Button>
+			<Button type="button" onClick="{() => onDelete(participant)}" mode="danger">Delete</Button>
+		</div>
 	</div>
 </div>

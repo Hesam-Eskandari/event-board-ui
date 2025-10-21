@@ -45,7 +45,9 @@
 <div class="card">
 	<div class="content">
 		<div>{category.title}</div>
-		<Button type="button" onClick="{() => onEdit(category)}">Edit</Button>
-		<Button type="button" onClick="{() => onDelete(category)}" mode="danger">Delete</Button>
+		<div>
+			<Button type="button" onClick="{() => onEdit(category)}">Edit</Button>
+			<Button type="button" onClick="{() => onDelete(category)}" mode="danger">Delete</Button>
+		</div>
 	</div>
 </div>
