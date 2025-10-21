@@ -13,7 +13,7 @@
 		event: EventModel;
 
 	} = $props();
-	const duration = calcDuration(event.start, event.end);
+	const duration = $derived(calcDuration(event.start, event.end));
 
 
 </script>
