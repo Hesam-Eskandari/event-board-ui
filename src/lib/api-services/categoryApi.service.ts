@@ -96,7 +96,13 @@ export class CategoryApiService implements CategoryService {
 }
 
 class MockCategoryDataProvider {
-	private static categories: CategoryModel[] = [];
+	private static categories: CategoryModel[] = [
+		{title: 'Personal Development', id: '1'},
+		{title: 'Chores', id: '2'},
+		{title: 'Chilling', id: '3'},
+		{title: 'Socializing', id: '4'},
+		{title: 'Working', id: '5'},
+	];
 	getCategories(): CategoryModel[] {
 		return [...MockCategoryDataProvider.categories];
 	}
