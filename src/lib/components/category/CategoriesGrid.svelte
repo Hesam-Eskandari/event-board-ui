@@ -11,6 +11,7 @@
 <style>
     .grid {
         display: flex;
+        flex-wrap: wrap;
         gap: 1rem;
         margin-bottom: 1rem;
     }

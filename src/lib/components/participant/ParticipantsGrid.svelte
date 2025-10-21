@@ -11,6 +11,7 @@
 <style>
     .grid {
         display: flex;
+        max-width: 100%;
         gap: 1rem;
         margin-bottom: 1rem;
     }
