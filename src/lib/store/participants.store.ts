@@ -40,7 +40,7 @@ export class ParticipantStore implements ParticipantService {
 		return derived(this.state, ($state, set) => set($state));
 	}
 
-	addParticipant(firstname: string, lastname: string, imageUrl: string): Subscription<DataStatus<ParticipantModel | null>> {
+	addParticipant(participant: ParticipantModel): Subscription<DataStatus<ParticipantModel | null>> {
 		this.state.update((state) => {
 			state.status = 'loading';
 			state.error = null;
@@ -48,7 +48,7 @@ export class ParticipantStore implements ParticipantService {
 		});
 		let model: ParticipantModel | null = null;
 		this.apiService
-			.addParticipant(firstname, lastname, imageUrl)
+			.addParticipant(participant)
 			.subscribe((ds: DataStatus<ParticipantModel | null>) => {
 				this.state.update((state: ParticipantState): ParticipantState => {
 					state.error = ds.error;

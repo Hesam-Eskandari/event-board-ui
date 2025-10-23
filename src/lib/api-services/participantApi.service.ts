@@ -5,12 +5,12 @@ import type { DataStatus } from '$lib/entities/dataStatus';
 import type { Subscriber, Unsubscriber } from 'svelte/store';
 
 export class ParticipantApiService implements ParticipantService {
-	addParticipant(firstname: string, lastname: string, imageUrl: string): Subscription<DataStatus<ParticipantModel | null>> {
+	addParticipant(p:ParticipantModel): Subscription<DataStatus<ParticipantModel | null>> {
 		const mockDataProvider = new MockParticipantDataProvider();
 		return {
 			subscribe: (run, invalidate) => {
 				invalidate?.();
-				Promise.resolve(new Response(JSON.stringify(mockDataProvider.addParticipant(firstname, lastname, imageUrl))))
+				Promise.resolve(new Response(JSON.stringify(mockDataProvider.addParticipant(p.firstname, p.lastname, p.imageUrl))))
 					.then(async (res) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
