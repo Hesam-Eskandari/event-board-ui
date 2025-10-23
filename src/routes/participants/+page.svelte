@@ -11,7 +11,7 @@
 
 	const service = ParticipantStore.getInstance();
 	let subscription: Unsubscriber | null = null;
-	let participants: ParticipantModel[] = [];
+	let participants: ParticipantModel[] = $state([]);
 	onMount(() => {
 		subscription = service.getParticipants().subscribe((model: DataStatus<ParticipantModel[]>) => {
 			participants = model.data;
@@ -22,29 +22,19 @@
 		subscription?.();
 	});
 
-	let showAddForm = false;
-	let showEditForm = false;
-	let newFirstname = '';
-	let	newLastname = '';
-	let	newImageUrl = '';
-	let editFirstname = '';
-	let	editLastname = '';
-	let	editImageUrl = '';
-	let editId: string | null = null;
+	let showAddForm = $state(false);
+	let showEditForm = $state(false);
+	let editParticipant: ParticipantModel | null = $state(null);
 
 	function isValid(firstname: string, lastname: string): boolean {
 		return firstname?.trim() !== '' && lastname?.trim() !== '';
 	}
 
-	function addParticipant(event: Event) {
-		event.preventDefault();
-		if (!isValid(newFirstname, newLastname)) {
+	function addParticipant(participant: ParticipantModel) {
+		if (!isValid(participant.firstname, participant.lastname)) {
 			return;
 		}
-		service.addParticipant(newFirstname, newLastname, newImageUrl);
-		newFirstname = '';
-		newLastname = '';
-		newImageUrl = '';
+		service.addParticipant(participant);
 		showAddForm = false;
 	}
 
@@ -55,17 +45,12 @@
 	function toggleEditForm() {
 		showEditForm = !showEditForm;
 		if (!showEditForm) {
-			editFirstname = '';
-			editLastname = '';
-			editImageUrl = '';
+			editParticipant = null;
 		}
 	}
 
 	function editParticipantItem(p: ParticipantModel) {
-		editFirstname = p.firstname;
-		editLastname = p.lastname;
-		editImageUrl = p.imageUrl;
-		editId = p.id;
+		editParticipant = p;
 		toggleEditForm();
 	}
 
@@ -73,16 +58,12 @@
 		service.deleteParticipant(p);
 	}
 
-	function onEdit() {
-		if (!isValid(editFirstname, editLastname)) {
+	function onEdit(p: ParticipantModel) {
+		if (!isValid(p.firstname, p.lastname)) {
 			return;
 		}
-		service.editParticipant({firstname: editFirstname, lastname: editLastname, imageUrl: editImageUrl, id: editId!});
-		editFirstname = '';
-		editLastname = '';
-		editImageUrl = '';
-		editId = '';
-		showEditForm = false;
+		service.editParticipant(p);
+		toggleEditForm()
 	}
 </script>
 
@@ -101,22 +82,15 @@
 		onAdd="{addParticipant}"
 		onCancel="{toggleAddForm}"
 		onClose="{toggleAddForm}"
-		disabled="{!isValid(newFirstname, newLastname)}"
-		bind:firstname="{newFirstname}"
-		bind:lastname="{newLastname}"
-		bind:imageUrl="{newImageUrl}"
 	/>
 {/if}
 
-{#if showEditForm}
+{#if showEditForm && editParticipant !== null}
 	<EditParticipantForm
 		onClose="{toggleEditForm}"
 		onCancel="{toggleEditForm}"
-		disabled="{!isValid(editFirstname, editLastname)}"
 		onEdit="{onEdit}"
-		bind:firstname="{editFirstname}"
-		bind:lastname="{editLastname}"
-		bind:imageUrl="{editImageUrl}"
+		participant="{editParticipant}"
 	/>
 {/if}
 
