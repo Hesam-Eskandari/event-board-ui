@@ -1,4 +1,5 @@
 import type { Period } from '$lib/entities/period';
+import type { Duration } from '$lib/entities/duration';
 
 
 export class DateTimeHelper {
@@ -15,7 +16,7 @@ export class DateTimeHelper {
 		const year = date.toLocaleString('en-US', { year: 'numeric' });
 		const month = date.toLocaleString('en-US', { month: 'short' }); // months start at 0
 		const day = date.toLocaleString('en-US', { day: '2-digit' });
-		const hours = date.toLocaleString('en-US', { hour: 'numeric', hourCycle: 'h23' });
+		const hours = date.toLocaleString('en-US', { hour: 'numeric', hourCycle: 'h24' });
 		const minutes = date.toLocaleString('en-US', { minute: '2-digit'});
 		const seconds = date.toLocaleString('en-US', { second: '2-digit' });
 		const shortDay = date.toLocaleString('en-US', { weekday: 'short' });
@@ -58,41 +59,136 @@ export class DateTimeHelper {
 		return `${year}-${month}-${day}T${hours}:${minutes}`;
 	}
 
-	static buildPeriods(): Period[] {
-		const now = new Date();
+	static buildPeriods(end: Date = new Date()): Period[] {
 		return [
 			{
-				name: 'Day',
+				name: 'Today',
 				id: 'day',
 				duration: {
-					end: now,
-					start: new Date(now.getTime() - DateTimeHelper.day)
+					end,
+					start: new Date(end.getFullYear(), end.getMonth(), end.getDate())
 				}
 			},
 			{
-				name: 'Week',
+				name: 'This Week',
 				id: 'week',
 				duration: {
-					end: now,
-					start: new Date(now.getTime() - DateTimeHelper.week)
+					end,
+					start: new Date(end.getFullYear(), end.getMonth(), end.getDate() - end.getDay())
 				}
 			},
 			{
-				name: 'Month',
+				name: '7 Days',
+				id: '7d',
+				duration: {
+					end,
+					start: new Date(end.getTime() - DateTimeHelper.week)
+				}
+			},
+			{
+				name: end.toLocaleString('en-US', { month: 'long' }),
 				id: 'month',
 				duration: {
-					end: now,
-					start: new Date(now.getTime() - DateTimeHelper.month)
+					end,
+					start: new Date(end.getFullYear(), end.getMonth(), 1)
 				}
 			},
 			{
-				name: 'Year',
+				name: DateTimeHelper.getSeason(end),
+				id: 'season',
+				duration: DateTimeHelper.getSeasonDuration(end)[0]!
+			},
+			{
+				name: DateTimeHelper.getQuarter(end),
+				id: 'quarter',
+				duration: {
+					end,
+					start: new Date(end.getFullYear(), end.getMonth() - (end.getMonth() % 3), 1)
+				}
+			},
+			{
+				name: `${end.getFullYear()}`,
 				id: 'year',
 				duration: {
-					end: now,
-					start: new Date(now.getTime() - DateTimeHelper.year)
+					end,
+					start: new Date(end.getFullYear(), 0, 1)
 				}
 			}
 		];
+	}
+
+	static getQuarter(date: Date): string {
+		const month = date.getMonth();
+		if (month < 3) {
+			return 'Q1';
+		} else if (month < 6) {
+			return 'Q2';
+		} else if (month < 9) {
+			return 'Q3';
+		} else {
+			return 'Q4';
+		}
+	}
+
+	static getSeason(date: Date): string {
+		const month = date.getMonth();
+		if (month === 11 || month === 0 || month === 1) {
+			return 'Winter';
+		}
+		if (month >= 2 && month <= 4) {
+			return 'Spring';
+		}
+		if (month >= 5 && month <= 7) {
+			return 'Summer';
+		}
+		return 'Fall';
+	}
+
+	static getSeasonDuration(date: Date = new Date()): [Duration | null, Error | null]  {
+		const year = date.getFullYear();
+
+		const springStart_Y = new Date(year, 2, 21);
+		const summerStart_Y = new Date(year, 5, 22);
+		const fallStart_Y = new Date(year, 8, 23);
+		const winterStart_Y = new Date(year, 11, 23);
+
+		if (date >= springStart_Y && date < summerStart_Y) {
+			return [{
+				start: springStart_Y,
+				end: new Date(year, 5, 21)
+			}, null];
+		}
+
+		if (date >= summerStart_Y && date < fallStart_Y) {
+			return [{
+				start: summerStart_Y,
+				end: new Date(year, 8, 22)
+			}, null];
+		}
+
+		if (date >= fallStart_Y && date < winterStart_Y) {
+			return [{
+				start: fallStart_Y,
+				end: new Date(year, 11, 22)
+			}, null];
+		}
+
+		if (date >= winterStart_Y) {
+			return [{
+				start: winterStart_Y,
+				end: new Date(year + 1, 2, 20)
+			}, null];
+		}
+
+		const winterStart_Y_minus_1 = new Date(year - 1, 11, 23); // Dec 23, Y-1
+		const winterEnd_Y = new Date(year, 2, 20); // Mar 20, Y
+
+		if (date <= winterEnd_Y) {
+			return [{
+				start: winterStart_Y_minus_1,
+				end: winterEnd_Y
+			}, null];
+		}
+		return [null, new Error('Invalid date')];
 	}
 }
