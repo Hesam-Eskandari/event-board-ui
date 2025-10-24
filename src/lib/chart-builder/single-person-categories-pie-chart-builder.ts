@@ -1,8 +1,8 @@
 import { type EChartsOption } from 'echarts';
 import type { EventModel } from '$lib/entities/event';
-import { calcDurationMinutes } from '$lib/utils/dateTime';
+import { DateTimeHelper } from '$lib/utils/dateTime';
 
-export class PieChartBuilder {
+export class SinglePersonCategoriesPieChartBuilder {
 	buildOptions(title: string, subtitle: string): EChartsOption {
 		return {
 			title: {
@@ -19,7 +19,7 @@ export class PieChartBuilder {
 			},
 			series: [
 				{
-					name: 'Access From',
+					name: 'Minutes Spent in Categories',
 					type: 'pie',
 					radius: '50%',
 					emphasis: {
@@ -36,7 +36,7 @@ export class PieChartBuilder {
 
 	buildData(events: EventModel[]): (string | number | null)[][] {
 		const totalDurationOfCategories: {[key: string]: {name: string; value: number}} =  {};
-		events.map(event => ({category: event.category, duration: calcDurationMinutes(event.start, event.end)}))
+		events.map(event => ({category: event.category, duration: DateTimeHelper.calcDurationMinutes(event.start, event.end)}))
 			.forEach(ev => {
 				ev.category.id! in totalDurationOfCategories ? totalDurationOfCategories[ev.category.id!].value += ev.duration : totalDurationOfCategories[ev.category.id!] = {name: ev.category.title, value: ev.duration};
 			});
@@ -44,7 +44,7 @@ export class PieChartBuilder {
 			.sort((a, b) => b.value - a.value)
 			.map(ev => [ev.name, ev.value]);
 		return [
-			['Name', 'value', 'percentage'],
+			['name', 'value', 'percentage'],
 			...arr
 		]
 	}

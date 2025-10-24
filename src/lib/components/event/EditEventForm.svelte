@@ -4,15 +4,15 @@
 	import { type EventModel } from '$lib/entities/event';
 	import type { CategoryModel } from '$lib/entities/category';
 	import type { ParticipantModel } from '$lib/entities/participant';
-	import { toDatetimeLocal } from '$lib/utils/dateTime';
+	import { DateTimeHelper } from '$lib/utils/dateTime';
 	let { onClose, onCancel, onEdit, categories, participants, event } = $props();
 	let title = $state(event.title);
 	let categoryId = $state(event.category.id);
 	let participantId = $state(event.participant.id);
 	const category = $derived(categories.find((category: CategoryModel) => category.id === categoryId));
 	const participant = $derived(participants.find((participant: ParticipantModel) => participant.id === participantId));
-	let startStr: string = $state(toDatetimeLocal(event.start));
-	let endStr: string = $state(toDatetimeLocal(event.end));
+	let startStr: string = $state(DateTimeHelper.toDatetimeLocal(event.start));
+	let endStr: string = $state(DateTimeHelper.toDatetimeLocal(event.end));
 	let start: Date = $derived(new Date(startStr));
 	let end: Date = $derived(new Date(endStr));
 	const isValid = $derived((category.id !== event.category.id || participant.id !== event.participant.id || title !== event.title || start.getTime() !== event.start.getTime() || end.getTime() !== event.end.getTime()) && title.trim().length > 0 && start.getTime() < end.getTime());

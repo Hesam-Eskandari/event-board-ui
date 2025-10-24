@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '../Button.svelte';
 	import { type EventModel } from '$lib/entities/event';
-	import { calcDuration, formatDateTime } from '$lib/utils/dateTime';
+	import { DateTimeHelper } from '$lib/utils/dateTime';
 	let {
 		onDelete,
 		onEdit,
@@ -13,7 +13,7 @@
 		event: EventModel;
 
 	} = $props();
-	const duration = $derived(calcDuration(event.start, event.end));
+	const duration = $derived(DateTimeHelper.calcDuration(event.start, event.end));
 
 
 </script>
@@ -51,8 +51,8 @@
 		<h2>{event.title}</h2>
 		<div><b>Participant</b>: {event.participant.firstname} {event.participant.lastname}</div>
 		<div><b>Category</b>: {event.category.title}</div>
-		<div><b>Start</b>: {formatDateTime(event.start)}</div>
-		<div><b>End</b>: {formatDateTime(event.end)}</div>
+		<div><b>Start</b>: {DateTimeHelper.formatDateTime(event.start)}</div>
+		<div><b>End</b>: {DateTimeHelper.formatDateTime(event.end)}</div>
 		<div><b>Duration</b>: {duration}</div>
 		<div>
 			<Button type="button" onClick="{() => onEdit(event)}">Edit</Button>
