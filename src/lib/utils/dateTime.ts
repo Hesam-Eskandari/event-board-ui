@@ -29,6 +29,12 @@ export function calcDuration(start: Date, end: Date): string {
 	return res;
 }
 
+export function calcDurationMinutes(start: Date, end: Date): number {
+	const diff = end.getTime() - start.getTime();
+	const minute = 1000 * 60;
+	return Math.floor(diff / minute);
+}
+
 export function toDatetimeLocal(date: Date): string {
 	const pad = (n: any) => n.toString().padStart(2, '0');
 	const year = date.getFullYear();

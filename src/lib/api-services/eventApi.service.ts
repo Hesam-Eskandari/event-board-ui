@@ -106,7 +106,101 @@ export class EventApiService implements EventService {
 }
 
 class MockEventDataProvider {
-	private static events: EventModel[] = [];
+	private static events: EventModel[] = [
+		{
+			category: {
+				title: "Chores",
+				id: "2"
+			},
+			participant: {
+				firstname: "Hesam",
+				lastname: "Eskandari",
+				imageUrl: "https://media.licdn.com/dms/image/v2/D5603AQEPI9bIXOcaYA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726718100271?e=1762387200&v=beta&t=mE9DRFq7sR0dB_b49vvCuISueR6wL4ttV99a29eqZA8",
+				"id": "1"
+			},
+			start: new Date("2025-10-22T01:00:00.000Z"),
+			end: new Date("2025-10-22T05:00:00.000Z"),
+			title: "Baking Bread",
+			id: "1"
+		},
+		{
+			category: {
+				title: "Personal Development",
+				id: "1"
+			},
+			participant: {
+				firstname: "Mahsa",
+				lastname: "Aghajani",
+				imageUrl: "https://media.licdn.com/dms/image/v2/C4D03AQGurYN5tfBfig/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1543775824818?e=1762387200&v=beta&t=sYm8CgzBhOvdYcvSwIE2OG5m_wo35J6cgRixxT2dkuk",
+				id: "2"
+			},
+			start: new Date("2025-10-21T01:00:00.000Z"),
+			end: new Date("2025-10-21T02:30:00.000Z"),
+			title: "Gym",
+			id: "2"
+		},
+		{
+			category: {
+				title: "Personal Development",
+				id: "1"
+			},
+			participant: {
+				firstname: "Hesam",
+				lastname: "Eskandari",
+				imageUrl: "https://media.licdn.com/dms/image/v2/D5603AQEPI9bIXOcaYA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726718100271?e=1762387200&v=beta&t=mE9DRFq7sR0dB_b49vvCuISueR6wL4ttV99a29eqZA8",
+				"id": "1"
+			},
+			start: new Date("2025-10-22T01:00:00.000Z"),
+			end: new Date("2025-10-22T02:30:00.000Z"),
+			title: "Gym",
+			id: "3"
+		},{
+			category: {
+				title: "Chilling",
+				id: "3"
+			},
+			participant: {
+				firstname: "Hesam",
+				lastname: "Eskandari",
+				imageUrl: "https://media.licdn.com/dms/image/v2/D5603AQEPI9bIXOcaYA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726718100271?e=1762387200&v=beta&t=mE9DRFq7sR0dB_b49vvCuISueR6wL4ttV99a29eqZA8",
+				id: "1"
+			},
+			start: new Date("2025-10-24T01:41:00.000Z"),
+			end: new Date("2025-10-24T02:41:00.000Z"),
+			title: "TV",
+			id: "4"
+		},{
+			category: {
+				title: "Personal Development",
+				id: "1"
+			},
+			participant: {
+				firstname: "Hesam",
+				lastname: "Eskandari",
+				imageUrl: "https://media.licdn.com/dms/image/v2/D5603AQEPI9bIXOcaYA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726718100271?e=1762387200&v=beta&t=mE9DRFq7sR0dB_b49vvCuISueR6wL4ttV99a29eqZA8",
+				id: "1"
+			},
+			start: new Date("2025-10-24T01:41:00.000Z"),
+			end: new Date("2025-10-24T02:41:00.000Z"),
+			title: "Coding",
+			id: "5"
+		},{
+			category: {
+				title: "Chilling",
+				id: "3"
+			},
+			participant: {
+				firstname: "Hesam",
+				lastname: "Eskandari",
+				imageUrl: "https://media.licdn.com/dms/image/v2/D5603AQEPI9bIXOcaYA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726718100271?e=1762387200&v=beta&t=mE9DRFq7sR0dB_b49vvCuISueR6wL4ttV99a29eqZA8",
+				id: "1"
+			},
+			start: new Date("2025-10-12T01:41:00.000Z"),
+			end: new Date("2025-10-12T02:41:00.000Z"),
+			title: "Gaming",
+			id: "6"
+		}
+	];
 	getEvents(): EventModel[] {
 		return [...MockEventDataProvider.events];
 	}

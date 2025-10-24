@@ -4,13 +4,25 @@
 	let {
 		onDelete,
 		onEdit,
+		onSelect,
 		participant
 	}: {
 		onDelete: (p: ParticipantModel) => void;
 		onEdit: (p: ParticipantModel) => void;
+		onSelect: (id: string) => void;
 		participant: ParticipantModel;
 	} = $props();
 
+	let disabled = $derived(participant.id === null);
+	function selectParticipant(event: Event) {
+		event.stopPropagation();
+		event.preventDefault();
+		if (participant.id === null) {
+			console.error('participant id is null');
+			return;
+		}
+		onSelect(participant.id!);
+	}
 
 </script>
 
@@ -28,7 +40,8 @@
 			border-radius: 0.5rem;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 			margin: 1rem;
-			background-color: #EEC
+			background-color: #EEC;
+			cursor: pointer;
 	}
 
 	.img {
@@ -57,7 +70,7 @@
 
 </style>
 
-<div class="card">
+<div class="card" on:click={selectParticipant}>
 	<div class="img">
 		{#if !!participant.imageUrl?.trim().length}
 			<img src="{participant.imageUrl}" width="120" alt="{participant.firstname} {participant.lastname}">
@@ -68,8 +81,8 @@
 	<div class="content">
 		<div>{participant.firstname} {participant.lastname}</div>
 		<div>
-			<Button type="button" onClick="{() => onEdit(participant)}">Edit</Button>
-			<Button type="button" onClick="{() => onDelete(participant)}" mode="danger">Delete</Button>
+			<Button type="button" onClick="{() => onEdit(participant)}" {disabled}>Edit</Button>
+			<Button type="button" onClick="{() => onDelete(participant)}" {disabled} mode="danger">Delete</Button>
 		</div>
 	</div>
 </div>

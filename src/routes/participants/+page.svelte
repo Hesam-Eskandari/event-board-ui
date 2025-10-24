@@ -1,4 +1,7 @@
 <script lang="ts">
+	import type { Unsubscriber } from 'svelte/store';
+	import { onDestroy, onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { ParticipantStore } from '$lib/store/participants.store';
 	import ParticipantsGrid from '$lib/components/participant/ParticipantsGrid.svelte';
 	import AddParticipantForm from '$lib/components/participant/AddParticipantForm.svelte';
@@ -6,8 +9,6 @@
 	import type { ParticipantModel } from '$lib/entities/participant';
 	import Button from '$lib/components/button.svelte';
 	import type { DataStatus } from '$lib/entities/dataStatus';
-	import { onDestroy, onMount } from 'svelte';
-	import type { Unsubscriber } from 'svelte/store';
 
 	const service = ParticipantStore.getInstance();
 	let subscription: Unsubscriber | null = null;
@@ -65,6 +66,10 @@
 		service.editParticipant(p);
 		toggleEditForm()
 	}
+
+	function onSelect(id: string) {
+		goto(`/participants/${id}`);
+	}
 </script>
 
 <style>
@@ -94,7 +99,7 @@
 	/>
 {/if}
 
-<ParticipantsGrid {onDelete} onEdit="{editParticipantItem}" {participants}></ParticipantsGrid>
+<ParticipantsGrid {onDelete} onEdit="{editParticipantItem}" {participants} {onSelect}></ParticipantsGrid>
 
 
 
