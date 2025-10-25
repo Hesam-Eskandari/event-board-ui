@@ -1,9 +1,9 @@
-import { type EChartsOption } from 'echarts';
 import type { EventModel } from '$lib/entities/event';
 import { DateTimeHelper } from '$lib/utils/dateTime';
+import type { ChartOption } from '$lib/types/types';
 
 export class SinglePersonCategoriesPieChartBuilder {
-	buildOptions(title: string, subtitle: string): EChartsOption {
+	buildOptions(title: string, subtitle: string): ChartOption {
 		return {
 			title: {
 				text: title,
@@ -40,6 +40,9 @@ export class SinglePersonCategoriesPieChartBuilder {
 			.forEach(ev => {
 				ev.category.id! in totalDurationOfCategories ? totalDurationOfCategories[ev.category.id!].value += ev.duration : totalDurationOfCategories[ev.category.id!] = {name: ev.category.title, value: ev.duration};
 			});
+		if (Object.keys(totalDurationOfCategories).length === 0) {
+			return [];
+		}
 		const arr = Object.values(totalDurationOfCategories)
 			.sort((a, b) => b.value - a.value)
 			.map(ev => [ev.name, ev.value]);

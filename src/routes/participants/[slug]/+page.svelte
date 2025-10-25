@@ -12,7 +12,7 @@
 	import  VisualizationCard  from '$lib/components/visualization-card/VisualizationCard.svelte';
 	import SinglePersonCategoriesPieChart from '$lib/components/single-person-categories-pie-chart/SinglePersonCategoriesPieChart.svelte';
 
-	const id = $derived(page.params.slug);
+	const participantId = $derived(page.params.slug);
 
 	const participantService: ParticipantService = ParticipantStore.getInstance();
 	const eventService: EventService = EventStore.getInstance();
@@ -22,13 +22,13 @@
 	let participant: ParticipantModel | null = $state(null);
 
 	let events: EventModel[] = $state([]);
-	let myEvents: EventModel[] = $derived(events.filter(ev => ev.participant.id === id));
+	let personalEvents: EventModel[] = $derived(events.filter(ev => ev.participant.id === participantId));
 
 	onMount(() => {
 		pSub = participantService.getParticipants().subscribe((ds: DataStatus<ParticipantModel[]>) => {
 			if (ds.status === 'success') {
 				const participants = ds.data;
-				participant = participants.find(p => p.id === id) ?? null
+				participant = participants.find(p => p.id === participantId) ?? null
 			}
 		});
 		eSub = eventService.getEvents().subscribe((ds: DataStatus<EventModel[]>) => {
@@ -47,8 +47,8 @@
 
 <style>
 	.category-pie-card {
-			width: 400px;
-			max-height: 300px;
+			width: 450px;
+			height: 400px;
 	}
 </style>
 
@@ -58,6 +58,6 @@
 {/if}
 <div class="category-pie-card">
 	<VisualizationCard >
-		<SinglePersonCategoriesPieChart events="{myEvents}"/>
+			<SinglePersonCategoriesPieChart events="{personalEvents}"/>
 	</VisualizationCard>
 </div>

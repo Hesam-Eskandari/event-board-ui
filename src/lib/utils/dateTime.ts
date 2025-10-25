@@ -49,6 +49,10 @@ export class DateTimeHelper {
 		return Math.floor(diff / minute);
 	}
 
+	static getStartOfTheDay(date: Date): Date {
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	}
+
 	static toDatetimeLocal(date: Date): string {
 		const pad = (n: any) => n.toString().padStart(2, '0');
 		const year = date.getFullYear();
@@ -66,7 +70,7 @@ export class DateTimeHelper {
 				id: 'day',
 				duration: {
 					end,
-					start: new Date(end.getFullYear(), end.getMonth(), end.getDate())
+					start: DateTimeHelper.getStartOfTheDay(end)
 				}
 			},
 			{
@@ -96,15 +100,12 @@ export class DateTimeHelper {
 			{
 				name: DateTimeHelper.getSeason(end),
 				id: 'season',
-				duration: DateTimeHelper.getSeasonDuration(end)[0]!
+				duration: DateTimeHelper.getSeasonDuration(end, true)[0]!
 			},
 			{
 				name: DateTimeHelper.getQuarter(end),
 				id: 'quarter',
-				duration: {
-					end,
-					start: new Date(end.getFullYear(), end.getMonth() - (end.getMonth() % 3), 1)
-				}
+				duration: DateTimeHelper.getQuarterDuration(end, true)[0]!
 			},
 			{
 				name: `${end.getFullYear()}`,
@@ -144,7 +145,44 @@ export class DateTimeHelper {
 		return 'Fall';
 	}
 
-	static getSeasonDuration(date: Date = new Date()): [Duration | null, Error | null]  {
+	static getQuarterDuration(date: Date = new Date(), isUntilDate=false): [Duration | null, Error | null]  {
+		const year = date.getFullYear();
+		const q1Start = new Date(year, 0, 1);
+		const q2Start = new Date(year, 3, 1);
+		const q3Start = new Date(year, 6, 1);
+		const q4Start = new Date(year, 9, 1);
+		const q1End = new Date(year, 2, 29);
+		const q2End = new Date(year, 5, 31);
+		const q3End = new Date(year, 8, 30);
+		const q4End = new Date(year, 11, 31);
+		if (date >= q1Start && date < q2Start) {
+			return [{
+				start: q1Start,
+				end: isUntilDate ? date : q1End
+			}, null];
+		}
+		if (date >= q2Start && date < q3Start) {
+			return [{
+				start: q2Start,
+				end: isUntilDate ? date : q2End
+			}, null];
+		}
+		if (date >= q3Start && date < q4Start) {
+			return [{
+				start: q3Start,
+				end: isUntilDate ? date : q3End
+			}, null];
+		}
+		if (date >= q4Start) {
+			return [{
+				start: q4Start,
+				end: isUntilDate ? date : q4End
+			}, null];
+		}
+		return [null, new Error('invalid date')];
+	}
+
+	static getSeasonDuration(date: Date = new Date(), isUntilDate=false): [Duration | null, Error | null]  {
 		const year = date.getFullYear();
 
 		const springStart_Y = new Date(year, 2, 21);
@@ -155,28 +193,28 @@ export class DateTimeHelper {
 		if (date >= springStart_Y && date < summerStart_Y) {
 			return [{
 				start: springStart_Y,
-				end: new Date(year, 5, 21)
+				end: isUntilDate ? date : new Date(year, 5, 21)
 			}, null];
 		}
 
 		if (date >= summerStart_Y && date < fallStart_Y) {
 			return [{
 				start: summerStart_Y,
-				end: new Date(year, 8, 22)
+				end: isUntilDate ? date : new Date(year, 8, 22)
 			}, null];
 		}
 
 		if (date >= fallStart_Y && date < winterStart_Y) {
 			return [{
 				start: fallStart_Y,
-				end: new Date(year, 11, 22)
+				end: isUntilDate ? date : new Date(year, 11, 22)
 			}, null];
 		}
 
 		if (date >= winterStart_Y) {
 			return [{
 				start: winterStart_Y,
-				end: new Date(year + 1, 2, 20)
+				end: isUntilDate ? date : new Date(year + 1, 2, 20)
 			}, null];
 		}
 
@@ -186,9 +224,16 @@ export class DateTimeHelper {
 		if (date <= winterEnd_Y) {
 			return [{
 				start: winterStart_Y_minus_1,
-				end: winterEnd_Y
+				end: isUntilDate ? date : winterEnd_Y
 			}, null];
 		}
-		return [null, new Error('Invalid date')];
+		return [null, new Error('invalid date')];
+	}
+
+	static getShortTextDuration(duration: Duration): string {
+		if (duration.start.getDate() === duration.end.getDate() && duration.start.getMonth() === duration.end.getMonth() && duration.start.getFullYear() === duration.end.getFullYear()) {
+			return `${duration.start.toLocaleString('en-US', { month: 'short', day: '2-digit' })}`;
+		}
+		return `${duration.start.toLocaleString('en-US', { month: 'short', day: '2-digit' })} - ${duration.end.toLocaleString('en-US', { month: 'short', day: '2-digit' })}`;
 	}
 }

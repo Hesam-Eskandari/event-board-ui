@@ -3,6 +3,8 @@
         display: block;
         min-width: 300px;
         min-height: 200px;
+				width: 100%;
+				height: 100%;
         background-color: #fafafa !important;
         border: 1px solid #ccc !important;
         border-radius: 15px;
