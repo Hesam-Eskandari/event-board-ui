@@ -48,8 +48,20 @@
 	}
 	select:focus {
 			outline: none;
-			border-color: #007bff;
+			border-color: #00aaff;
 	}
+	select:hover {
+			border-color: #0099ff;
+      box-shadow: 0 0 6px #0055aa, 0 0 10px #faa;
+	}
+	select option {
+			background-color: #fff;
+			color: #333;
+	}
+	/*select option:hover {*/
+	/*		background-color: #007bff;*/
+	/*		color: #fff;*/
+	/*}*/
 </style>
 
 {#if invalidOptionSet}

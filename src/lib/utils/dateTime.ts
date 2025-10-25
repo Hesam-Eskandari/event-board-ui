@@ -64,6 +64,7 @@ export class DateTimeHelper {
 	}
 
 	static buildPeriods(end: Date = new Date()): Period[] {
+		const sevenDaysAgo = new Date(end.getTime() - DateTimeHelper.day * 6 - 1);
 		return [
 			{
 				name: 'Today',
@@ -86,7 +87,7 @@ export class DateTimeHelper {
 				id: '7d',
 				duration: {
 					end,
-					start: new Date(end.getTime() - DateTimeHelper.week)
+					start: new Date(sevenDaysAgo.getFullYear(), sevenDaysAgo.getMonth(), sevenDaysAgo.getDate())
 				}
 			},
 			{
