@@ -7,6 +7,11 @@
 			disabled?: boolean;
 		} = $props();
 
+	function click(e: MouseEvent) {
+		e.stopPropagation();
+		onClick?.();
+	}
+
 </script>
 <style>
 		button {
@@ -37,4 +42,4 @@
 				background-color: #77bb77;
 		}
 </style>
-<button class="{mode}" {type} on:click={onClick} {disabled}><slot /></button>
+<button class="{mode}" {type} on:click={click} {disabled}><slot /></button>
