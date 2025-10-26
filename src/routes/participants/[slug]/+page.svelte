@@ -9,8 +9,7 @@
 	import type { EventService } from '$lib/services/event.service';
 	import { EventStore } from '$lib/store/event.store';
 	import type { EventModel } from '$lib/entities/event';
-	import  VisualizationCard  from '$lib/components/visualization-card/VisualizationCard.svelte';
-	import SinglePersonCategoriesPieChart from '$lib/components/single-person-categories-pie-chart/SinglePersonCategoriesPieChart.svelte';
+	import ChartDashboard, { type DashboardItemConfig } from '$lib/components/chart-dashboard/ChartDashboard.svelte';
 
 	const participantId = $derived(page.params.slug);
 
@@ -23,6 +22,29 @@
 
 	let events: EventModel[] = $state([]);
 	let personalEvents: EventModel[] = $derived(events.filter(ev => ev.participant.id === participantId));
+	const configs: DashboardItemConfig[] = [
+		{
+			type: 'pie',
+			subtype: 'single-person-category',
+			width: '580px',
+			height: '400px',
+			id: '1'
+		},
+		{
+			type: 'pie',
+			subtype: 'single-person-category',
+			width: '480px',
+			height: '400px',
+			id: '2'
+		},
+		{
+			type: 'pie',
+			subtype: 'single-person-category',
+			width: '480px',
+			height: '400px',
+			id: '3'
+		}
+	];
 
 	onMount(() => {
 		pSub = participantService.getParticipants().subscribe((ds: DataStatus<ParticipantModel[]>) => {
@@ -46,9 +68,8 @@
 </script>
 
 <style>
-	.category-pie-card {
-			width: 450px;
-			height: 400px;
+	.dashboard {
+			padding: 50px;
 	}
 </style>
 
@@ -56,8 +77,7 @@
 {#if participant !== null}
 	<div>Name: {participant.firstname} {participant.lastname}</div>
 {/if}
-<div class="category-pie-card">
-	<VisualizationCard >
-			<SinglePersonCategoriesPieChart events="{personalEvents}"/>
-	</VisualizationCard>
+<div class="dashboard">
+	<ChartDashboard events="{personalEvents}" {configs}/>
 </div>
+

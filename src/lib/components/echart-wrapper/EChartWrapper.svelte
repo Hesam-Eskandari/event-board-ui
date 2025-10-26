@@ -14,9 +14,8 @@
 	let chartElement: HTMLDivElement | null = $state(null);
 	let chartData = $derived(data);
 	let chartOption = $derived(option);
-	let hidden = $derived(!isReadyToRender || chartData === null || chartData.length === 0 || chartOption === null);
-	let status: 'wait' | 'rendering' | 'rendered' = $derived(!hidden ? 'rendering' : 'wait');
 	let chart: Chart | null = $state(null);
+	let status: 'wait' | 'rendering' | 'rendered' = $derived(isReadyToRender && chartData != null && chartData.length > 0 && chartOption != null ? 'rendering' : 'wait');
 
 	$effect(() => {
 		if (status === 'wait' && chart !== null) {
@@ -25,6 +24,11 @@
 		if (status !== 'rendering') {
 			return;
 		}
+		status = 'rendered';
+		buildChart();
+	});
+
+	function buildChart() {
 		if (chart === null) {
 			chart = echarts.init(chartElement);
 		}
@@ -35,7 +39,7 @@
 			source: chartData
 		};
 		chart.setOption(chartOption);
-	});
+	}
 </script>
 
 <style>
@@ -51,10 +55,10 @@
 </style>
 
 {#if !isReadyToRender}
-	<div class="middle">Loading Chart</div>
+	<div class="middle">Waiting</div>
 {:else if chartData === null || chartData.length === 0}
 	<div class="middle">No Data</div>
 {:else if chartOption === null}
 	<div class="middle">No Option</div>
 {/if}
-<div class="middle"  bind:this={chartElement}></div>
+<div class="middle" hidden="{status === 'wait'}"  bind:this={chartElement}></div>

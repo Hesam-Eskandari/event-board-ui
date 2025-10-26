@@ -38,8 +38,8 @@
 			border: 1px solid #bcc;
 			border-radius: 4px;
 			font-size: 1rem;
-			background-color: transparent;
-			color: #333;
+			background-color: #fafaff;
+			color: #222;
 			cursor: pointer;
 			appearance: none;
 			padding: 10px;
@@ -54,14 +54,6 @@
 			border-color: #0099ff;
       box-shadow: 0 0 6px #0055aa, 0 0 10px #faa;
 	}
-	select option {
-			background-color: #fff;
-			color: #333;
-	}
-	/*select option:hover {*/
-	/*		background-color: #007bff;*/
-	/*		color: #fff;*/
-	/*}*/
 </style>
 
 {#if invalidOptionSet}
@@ -69,7 +61,7 @@
 {:else}
 	<select bind:value={periodId} on:change={selectOption}>
 		{#each periods as period}
-			<option value={period.id}>{period.name}</option>
+			<option class="item" value={period.id}>{period.name}</option>
 		{/each}
 	</select>
 {/if}

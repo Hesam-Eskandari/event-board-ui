@@ -1,13 +1,30 @@
 import type { EventModel } from '$lib/entities/event';
 import { DateTimeHelper } from '$lib/utils/dateTime';
 import type { ChartOption } from '$lib/types/types';
+import type { ChartBuilder } from '$lib/chart-builder/chart-builder';
+import type { Period } from '$lib/entities/period';
 
-export class SinglePersonCategoriesPieChartBuilder {
-	buildOptions(title: string, subtitle: string): ChartOption {
+export interface SPCPieChartOptionParams {
+	title: string;
+	subtitle: string;
+}
+
+export type SPCPieChartDataParams = EventModel[];
+
+
+export class SinglePersonCategoriesPieChartBuilder<T extends SPCPieChartOptionParams, U extends SPCPieChartDataParams> implements ChartBuilder<T, U> {
+
+	generateParams(period:Period | null, events:EventModel[]):{optionParams: T; dataParams: U} {
+		const optionParams = {title: 'Categories', subtitle: period === null ? 'Period' : DateTimeHelper.getShortTextDuration(period.duration)} as T;
+		const dataParams = events as U;
+		return {optionParams, dataParams};
+	}
+
+	buildOptions(params: T): ChartOption {
 		return {
 			title: {
-				text: title,
-				subtext: subtitle,
+				text: params.title,
+				subtext: params.subtitle,
 				left: 'center'
 			},
 			tooltip: {
@@ -34,9 +51,9 @@ export class SinglePersonCategoriesPieChartBuilder {
 		};
 	}
 
-	buildData(events: EventModel[]): (string | number | null)[][] {
+	buildData(events: U): (string | number | null)[][] {
 		const totalDurationOfCategories: {[key: string]: {name: string; value: number}} =  {};
-		events.map(event => ({category: event.category, duration: DateTimeHelper.calcDurationMinutes(event.start, event.end)}))
+		(events as EventModel[]).map(event => ({category: event.category, duration: DateTimeHelper.calcDurationMinutes(event.start, event.end)}))
 			.forEach(ev => {
 				ev.category.id! in totalDurationOfCategories ? totalDurationOfCategories[ev.category.id!].value += ev.duration : totalDurationOfCategories[ev.category.id!] = {name: ev.category.title, value: ev.duration};
 			});

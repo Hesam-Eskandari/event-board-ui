@@ -109,10 +109,18 @@ export class DateTimeHelper {
 				duration: DateTimeHelper.getQuarterDuration(end, true)[0]!
 			},
 			{
+				name: `YTD`,
+				id: 'ytd',
+				duration: {
+					end,
+					start: new Date(end.getFullYear(), 0, 1)
+				}
+			},
+			{
 				name: `${end.getFullYear()}`,
 				id: 'year',
 				duration: {
-					end,
+					end: new Date(end.getFullYear(), 11, 31),
 					start: new Date(end.getFullYear(), 0, 1)
 				}
 			}
