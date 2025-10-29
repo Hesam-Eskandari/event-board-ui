@@ -1,5 +1,5 @@
 import type { EventModel } from '$lib/entities/event';
-import { DateTimeHelper } from '$lib/utils/dateTime';
+import { DateTimeHelper } from '$lib/utils/date-time';
 import type { ChartOption } from '$lib/types/types';
 import type { ChartBuilder } from '$lib/chart-builder/chart-builder';
 import type { Period } from '$lib/entities/period';

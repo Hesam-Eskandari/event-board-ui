@@ -1,5 +1,5 @@
 import { derived, type Writable, writable } from 'svelte/store';
-import type { DataStatus, Status } from '$lib/entities/dataStatus';
+import type { DataStatus, Status } from '$lib/entities/data-status';
 import type { Subscription } from '$lib/entities/subscription';
 import type { EventModel } from '$lib/entities/event';
 import { EventApiService } from '$lib/api-services/eventApi.service';

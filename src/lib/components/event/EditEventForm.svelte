@@ -4,7 +4,7 @@
 	import { type EventModel } from '$lib/entities/event';
 	import type { CategoryModel } from '$lib/entities/category';
 	import type { ParticipantModel } from '$lib/entities/participant';
-	import { DateTimeHelper } from '$lib/utils/dateTime';
+	import { DateTimeHelper } from '$lib/utils/date-time';
 	let { onClose, onCancel, onEdit, categories, participants, event } = $props();
 	let title = $state(event.title);
 	let categoryId = $state(event.category.id);

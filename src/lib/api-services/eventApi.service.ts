@@ -1,7 +1,7 @@
 import type { Subscriber, Unsubscriber } from 'svelte/store';
 import type { EventService } from '$lib/services/event.service';
 import type { Subscription } from '$lib/entities/subscription';
-import type { DataStatus } from '$lib/entities/dataStatus';
+import type { DataStatus } from '$lib/entities/data-status';
 import type { EventModel } from '$lib/entities/event';
 
 export class EventApiService implements EventService {

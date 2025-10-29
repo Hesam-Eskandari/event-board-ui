@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '../Button.svelte';
 	import { type EventModel } from '$lib/entities/event';
-	import { DateTimeHelper } from '$lib/utils/dateTime';
+	import { DateTimeHelper } from '$lib/utils/date-time';
 	let {
 		onDelete,
 		onEdit,

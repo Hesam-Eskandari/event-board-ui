@@ -5,11 +5,12 @@
 	import { type ParticipantService } from '$lib/services/participant.service';
 	import { ParticipantStore } from '$lib/store/participants.store';
 	import type { ParticipantModel } from '$lib/entities/participant';
-	import type { DataStatus } from '$lib/entities/dataStatus';
+	import type { DataStatus } from '$lib/entities/data-status';
 	import type { EventService } from '$lib/services/event.service';
 	import { EventStore } from '$lib/store/event.store';
 	import type { EventModel } from '$lib/entities/event';
-	import ChartDashboard, { type DashboardItemConfig } from '$lib/components/chart-dashboard/ChartDashboard.svelte';
+	import ChartDashboard  from '$lib/components/chart-dashboard/ChartDashboard.svelte';
+	import type { DashboardItemConfig } from '$lib/entities/dashboard-item';
 
 	const participantId = $derived(page.params.slug);
 
@@ -28,21 +29,32 @@
 			subtype: 'single-person-category',
 			width: '580px',
 			height: '400px',
-			id: '1'
+			id: '1',
+			filterConfig: {
+				id: '1',
+				type: 'dropdown',
+				position: 'top-left',
+			}
 		},
 		{
 			type: 'pie',
 			subtype: 'single-person-category',
 			width: '480px',
 			height: '400px',
-			id: '2'
+			id: '2',
+			filterConfig: {
+				id: '2',
+				type: 'dropdown',
+				position: 'top-left',
+			}
 		},
 		{
 			type: 'pie',
 			subtype: 'single-person-category',
 			width: '480px',
 			height: '400px',
-			id: '3'
+			id: '3',
+			filterConfig: null
 		}
 	];
 
@@ -78,6 +90,6 @@
 	<div>Name: {participant.firstname} {participant.lastname}</div>
 {/if}
 <div class="dashboard">
-	<ChartDashboard events="{personalEvents}" {configs}/>
+	<ChartDashboard events={personalEvents} {configs}/>
 </div>
 

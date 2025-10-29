@@ -1,7 +1,7 @@
 import type { Subscriber, Unsubscriber } from 'svelte/store';
 import type { CategoryService } from '$lib/services/category.service';
 import type { Subscription } from '$lib/entities/subscription';
-import type { DataStatus } from '$lib/entities/dataStatus';
+import type { DataStatus } from '$lib/entities/data-status';
 import type { CategoryModel } from '$lib/entities/category';
 
 export class CategoryApiService implements CategoryService {

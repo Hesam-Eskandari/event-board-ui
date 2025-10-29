@@ -1,5 +1,5 @@
 import type { Subscription } from '$lib/entities/subscription';
-import type { DataStatus } from '$lib/entities/dataStatus';
+import type { DataStatus } from '$lib/entities/data-status';
 import type { EventModel } from '$lib/entities/event';
 
 export interface EventService {

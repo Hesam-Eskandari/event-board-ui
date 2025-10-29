@@ -1,6 +1,6 @@
 import type { ParticipantModel } from '$lib/entities/participant';
 import { derived, type Writable, writable } from 'svelte/store';
-import type { DataStatus, Status } from '$lib/entities/dataStatus';
+import type { DataStatus, Status } from '$lib/entities/data-status';
 import type { Subscription } from '$lib/entities/subscription';
 import type { ParticipantService } from '$lib/services/participant.service';
 import { ParticipantApiService } from '$lib/api-services/participantApi.service';

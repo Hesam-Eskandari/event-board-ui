@@ -1,6 +1,6 @@
 import type { Subscription } from '$lib/entities/subscription';
 import type { ParticipantModel } from '$lib/entities/participant';
-import type { DataStatus } from '$lib/entities/dataStatus';
+import type { DataStatus } from '$lib/entities/data-status';
 
 export interface ParticipantService {
 	getParticipants(): Subscription<DataStatus<ParticipantModel[]>>;

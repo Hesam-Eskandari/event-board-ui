@@ -8,7 +8,7 @@
 	import EditParticipantForm from '$lib/components/participant/EditParticipantForm.svelte';
 	import type { ParticipantModel } from '$lib/entities/participant';
 	import Button from '$lib/components/button.svelte';
-	import type { DataStatus } from '$lib/entities/dataStatus';
+	import type { DataStatus } from '$lib/entities/data-status';
 
 	const service = ParticipantStore.getInstance();
 	let subscription: Unsubscriber | null = null;
@@ -80,26 +80,26 @@
 	Participants
 </h1>
 
-<Button type="button" onClick="{toggleAddForm}" mode="peace">Add</Button>
+<Button type="button" onClick={toggleAddForm} mode="peace">Add</Button>
 
 {#if showAddForm}
 	<AddParticipantForm
-		onAdd="{addParticipant}"
-		onCancel="{toggleAddForm}"
-		onClose="{toggleAddForm}"
+		onAdd={addParticipant}
+		onCancel={toggleAddForm}
+		onClose={toggleAddForm}
 	/>
 {/if}
 
 {#if showEditForm && editParticipant !== null}
 	<EditParticipantForm
-		onClose="{toggleEditForm}"
-		onCancel="{toggleEditForm}"
-		onEdit="{onEdit}"
-		participant="{editParticipant}"
+		onClose={toggleEditForm}
+		onCancel={toggleEditForm}
+		onEdit={onEdit}
+		participant={editParticipant}
 	/>
 {/if}
 
-<ParticipantsGrid {onDelete} onEdit="{editParticipantItem}" {participants} {onSelect}></ParticipantsGrid>
+<ParticipantsGrid {onDelete} onEdit={editParticipantItem} {participants} {onSelect}></ParticipantsGrid>
 
 
 

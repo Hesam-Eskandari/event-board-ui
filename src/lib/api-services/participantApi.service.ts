@@ -1,7 +1,7 @@
 import type { ParticipantService } from '$lib/services/participant.service';
 import type { ParticipantModel } from '$lib/entities/participant';
 import type { Subscription } from '$lib/entities/subscription';
-import type { DataStatus } from '$lib/entities/dataStatus';
+import type { DataStatus } from '$lib/entities/data-status';
 import type { Subscriber, Unsubscriber } from 'svelte/store';
 
 export class ParticipantApiService implements ParticipantService {

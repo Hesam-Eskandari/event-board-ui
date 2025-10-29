@@ -1,6 +1,6 @@
 import { derived, type Writable, writable } from 'svelte/store';
 import type { CategoryService } from '$lib/services/category.service';
-import type { DataStatus, Status } from '$lib/entities/dataStatus';
+import type { DataStatus, Status } from '$lib/entities/data-status';
 import type { Subscription } from '$lib/entities/subscription';
 import type { CategoryModel } from '$lib/entities/category';
 import { CategoryApiService } from '$lib/api-services/categoryApi.service';

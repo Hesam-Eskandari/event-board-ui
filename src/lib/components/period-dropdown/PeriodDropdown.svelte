@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DateTimeHelper } from '$lib/utils/dateTime';
+	import { DateTimeHelper } from '$lib/utils/date-time';
 	import type { Period } from '$lib/entities/period';
 	import { onMount } from 'svelte';
 
@@ -56,12 +56,14 @@
 	}
 </style>
 
-{#if invalidOptionSet}
-	<p>Invalid Dropdown Options</p>
-{:else}
-	<select bind:value={periodId} on:change={selectOption}>
-		{#each periods as period}
-			<option class="item" value={period.id}>{period.name}</option>
-		{/each}
-	</select>
-{/if}
+<div>
+	{#if invalidOptionSet}
+		<p>Invalid Dropdown Options</p>
+	{:else}
+		<select bind:value={periodId} onchange={selectOption}>
+			{#each periods as period}
+				<option class="item" value={period.id}>{period.name}</option>
+			{/each}
+		</select>
+	{/if}
+</div>
