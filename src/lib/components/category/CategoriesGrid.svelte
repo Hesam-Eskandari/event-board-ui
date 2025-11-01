@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Category from '$lib/components/category/Category.svelte';
 	import type { CategoryModel } from '$lib/entities/category';
-	let { categories=[], onDelete, onEdit }:
+	let { categories=[], onDelete, onEdit, onSelect }:
 		{
 			categories: CategoryModel[],
 			onDelete: (participant: CategoryModel) => void,
 			onEdit: (participant: CategoryModel) => void,
+			onSelect: (id: string) => void,
 		} = $props();
 </script>
 <style>
@@ -19,7 +20,7 @@
 
 <div class="grid">
 	{#each categories as category (category.id)}
-		<Category {onDelete} {onEdit} {category} />
+		<Category {onDelete} {onEdit} {category} {onSelect} />
 	{:else}
 		<div>No Categories</div>
 	{/each}

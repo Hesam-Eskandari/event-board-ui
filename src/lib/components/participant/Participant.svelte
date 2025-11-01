@@ -70,7 +70,7 @@
 
 </style>
 
-<div class="card" on:click={selectParticipant}>
+<div class="card" onclick={selectParticipant}>
 	<div class="img">
 		{#if !!participant.imageUrl?.trim().length}
 			<img src="{participant.imageUrl}" width="120" alt="{participant.firstname} {participant.lastname}">

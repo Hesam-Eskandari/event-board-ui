@@ -9,6 +9,7 @@
 	import type { Unsubscriber } from 'svelte/store';
 	import type { CategoryModel } from '$lib/entities/category';
 	import { CategoryStore } from '$lib/store/category.store';
+	import { goto } from '$app/navigation';
 
 	const service = CategoryStore.getInstance();
 	let subscription: Unsubscriber | null = null;
@@ -73,6 +74,10 @@
 		editId = '';
 		showEditForm = false;
 	}
+
+	function onSelect(id: string) {
+		goto(`/categories/${id}`);
+	}
 </script>
 
 <style>
@@ -103,7 +108,7 @@
 	/>
 {/if}
 
-<CategoriesGrid {onDelete} onEdit="{editCategoryItem}" {categories} />
+<CategoriesGrid {onDelete} onEdit="{editCategoryItem}" {categories} {onSelect} />
 
 
 

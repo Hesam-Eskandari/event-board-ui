@@ -40,7 +40,7 @@ export class ChartBuilderFactory<T extends ChartOptionParams, U extends ChartDat
 		return this.chartBuilder.buildData(params);
 	}
 
-	generateParams(period: Period | null, events: EventModel[]): {optionParams: any, dataParams: any} {
+	generateParams(period: Period | null, events: EventModel[]): {optionParams: T, dataParams: U} {
 		return this.chartBuilder.generateParams(period, events);
 	}
 }

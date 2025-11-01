@@ -4,13 +4,24 @@
 	let {
 		onDelete,
 		onEdit,
+		onSelect,
 		category
 	}: {
 		onDelete: (category: CategoryModel) => void;
 		onEdit: (category: CategoryModel) => void;
+		onSelect: (id: string) => void;
 		category: CategoryModel;
 	} = $props();
 
+	function selectCategory(event: Event) {
+		event.stopPropagation();
+		event.preventDefault();
+		if (category.id === null) {
+			console.error('participant id is null');
+			return;
+		}
+		onSelect(category.id!);
+	}
 
 </script>
 
@@ -28,7 +39,8 @@
         border-radius: 0.5rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin: 1rem;
-        background-color: #EEC
+        background-color: #EEC;
+        cursor: pointer;
     }
 
     .content {
@@ -42,7 +54,7 @@
 
 </style>
 
-<div class="card">
+<div class="card" onclick={selectCategory}>
 	<div class="content">
 		<div>{category.title}</div>
 		<div>

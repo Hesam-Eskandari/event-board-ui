@@ -12,7 +12,7 @@ export interface SPCPieChartOptionParams {
 export type SPCPieChartDataParams = EventModel[];
 
 
-export class SinglePersonCategoriesPieChartBuilder<T extends SPCPieChartOptionParams, U extends SPCPieChartDataParams> implements ChartBuilder<T, U> {
+export class ParticipantCategoriesPieChartBuilder<T extends SPCPieChartOptionParams, U extends SPCPieChartDataParams> implements ChartBuilder<T, U> {
 
 	generateParams(period:Period | null, events:EventModel[]):{optionParams: T; dataParams: U} {
 		const optionParams = {title: 'Categories', subtitle: period === null ? 'Period' : DateTimeHelper.getShortTextDuration(period.duration)} as T;
