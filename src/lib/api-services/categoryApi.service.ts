@@ -15,7 +15,7 @@ export class CategoryApiService implements CategoryService {
 		return {
 			subscribe(run:Subscriber<DataStatus<CategoryModel | null>>, invalidate?:() => void):Unsubscriber {
 				invalidate?.()
-				const url: string = `${PUBLIC_BASE_API_URL}/categories`;
+				const url: string = `${PUBLIC_BASE_API_URL}/categories/`;
 				const dto: CategoryCreateDTO = {
 					title: title
 				} as CategoryCreateDTO;
@@ -98,7 +98,7 @@ export class CategoryApiService implements CategoryService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/categories`;
+				const url: string = `${PUBLIC_BASE_API_URL}/categories/`;
 				fetch(url,  {
 					method: 'GET',
 					headers: {

@@ -12,7 +12,7 @@ export class EventApiService implements EventService {
 		return {
 			subscribe(run:Subscriber<DataStatus<EventModel | null>>, invalidate?:() => void):Unsubscriber {
 				invalidate?.()
-				const url: string = `${PUBLIC_BASE_API_URL}/events`;
+				const url: string = `${PUBLIC_BASE_API_URL}/events/`;
 				const dto: EventCreateDTO = {
 					title: event.title,
 					start: event.start.toISOString(),
@@ -109,7 +109,7 @@ export class EventApiService implements EventService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/events`;
+				const url: string = `${PUBLIC_BASE_API_URL}/events/`;
 				fetch(url, {
 					method: 'GET',
 					headers: {
