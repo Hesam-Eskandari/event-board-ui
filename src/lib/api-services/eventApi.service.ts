@@ -3,15 +3,30 @@ import type { EventService } from '$lib/services/event.service';
 import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
 import type { EventModel } from '$lib/entities/event';
+import { PUBLIC_BASE_API_URL } from '$env/static/public';
+import type { EventCreateDTO, EventReadDTO, EventUpdateDTO } from '$lib/api-services/dtos/event';
+import type { CategoryModel } from '$lib/entities/category';
 
 export class EventApiService implements EventService {
 	addEvent(event: EventModel): Subscription<DataStatus<EventModel | null>> {
-		const mockDataProvider = new MockEventDataProvider();
 		return {
 			subscribe(run:Subscriber<DataStatus<EventModel | null>>, invalidate?:() => void):Unsubscriber {
 				invalidate?.()
-				Promise.resolve(new Response(JSON.stringify(mockDataProvider.addEvent(event))))
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/events`;
+				const dto: EventCreateDTO = {
+					title: event.title,
+					start: event.start.toISOString(),
+					end: event.end.toISOString(),
+					categoryId: event.category.id,
+					participantId: event.participant.id
+				} as EventCreateDTO;
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dto)
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -32,13 +47,16 @@ export class EventApiService implements EventService {
 	}
 
 	deleteEvent(event: EventModel): Subscription<Error | null> {
-		const mockDataProvider = new MockEventDataProvider();
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.deleteEvent(event)));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/events/${event.id}`;
+				fetch(url, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -55,13 +73,25 @@ export class EventApiService implements EventService {
 	}
 
 	editEvent(event: EventModel): Subscription<Error | null> {
-		const mockDataProvider = new MockEventDataProvider();
 		return {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.editEvent(event)));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/events/${event.id}`;
+				const dto: EventUpdateDTO = {
+					title: event.title,
+					start: event.start.toISOString(),
+					end: event.end.toISOString(),
+					categoryId: event.category.id,
+					participantId: event.participant.id
+				} as EventUpdateDTO;
+
+				fetch(url, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dto)
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -76,21 +106,35 @@ export class EventApiService implements EventService {
 	}
 
 	getEvents(): Subscription<DataStatus<EventModel[]>> {
-		const mockDataProvider = new MockEventDataProvider();
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.getEvents()));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/events`;
+				fetch(url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
-						const dataDto: EventModel[] = await res.json();
-						const data = dataDto.map(d => ({
-							...d,
-							start: new Date(d.start),
-							end: new Date(d.end)
+						const raw: EventReadDTO[] = await res.json();
+						const data: EventModel[] = raw.map((dto: EventReadDTO) => ({
+							id: dto.id,
+							start: new Date(dto.start),
+							end: new Date(dto.end),
+							title: dto.title,
+							category: {
+								id: dto.category.id,
+								title: dto.category.title
+							} as CategoryModel,
+							participant: {
+								id: dto.participant.id,
+								firstname: dto.participant.firstname,
+								lastname: dto.participant.lastname,
+								imageUrl: dto.participant.imageUrl
+							}
 						}));
 						run({ data, error: null, status: 'success' });
 					})

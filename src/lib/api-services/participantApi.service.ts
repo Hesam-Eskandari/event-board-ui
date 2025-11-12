@@ -1,17 +1,29 @@
+import type { Subscriber, Unsubscriber } from 'svelte/store';
 import type { ParticipantService } from '$lib/services/participant.service';
 import type { ParticipantModel } from '$lib/entities/participant';
 import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
-import type { Subscriber, Unsubscriber } from 'svelte/store';
+import { PUBLIC_BASE_API_URL } from '$env/static/public';
+import type { ParticipantCreateDTO, ParticipantReadDTO, ParticipantUpdateDTO } from '$lib/api-services/dtos/participant';
 
 export class ParticipantApiService implements ParticipantService {
 	addParticipant(p:ParticipantModel): Subscription<DataStatus<ParticipantModel | null>> {
-		const mockDataProvider = new MockParticipantDataProvider();
 		return {
 			subscribe: (run, invalidate) => {
 				invalidate?.();
-				Promise.resolve(new Response(JSON.stringify(mockDataProvider.addParticipant(p.firstname, p.lastname, p.imageUrl))))
-					.then(async (res) => {
+				const url = `${PUBLIC_BASE_API_URL}/participants/`;
+				const dto = {
+					firstname: p.firstname,
+					lastname: p.lastname,
+					imageUrl: p.imageUrl
+				} as ParticipantCreateDTO;
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dto)
+				}).then(async (res) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -28,37 +40,50 @@ export class ParticipantApiService implements ParticipantService {
 	}
 
 	getParticipants(): Subscription<DataStatus<ParticipantModel[]>> {
-		const mockDataProvider = new MockParticipantDataProvider();
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.getParticipants()));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url = `${PUBLIC_BASE_API_URL}/participants/`;
+				fetch(url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
-						const data: ParticipantModel[] = await res.json();
+						const raw: ParticipantReadDTO[] = await res.json();
+						const data = raw.map((dto: ParticipantReadDTO) => ({
+							firstname: dto.firstname,
+							lastname: dto.lastname,
+							imageUrl: dto.imageUrl,
+							id: dto.id
+						} as ParticipantModel));
+						console.log(data)
 						run({ data, error: null, status: 'success' });
 					})
 					.catch((err) => {
+						console.log(err);
 						run({ data: [], error: err, status: 'error' });
 					});
 
-				// Unsubscriber (cleanup)
 				return () => {};
 			}
 		};
 	}
 
 	deleteParticipant(participant: ParticipantModel): Subscription<Error | null> {
-		const mockDataProvider = new MockParticipantDataProvider();
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.deleteParticipant(participant)));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url = `${PUBLIC_BASE_API_URL}/participants/${participant.id}`;
+				fetch(url, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -68,20 +93,29 @@ export class ParticipantApiService implements ParticipantService {
 						run(err);
 					});
 
-				// Unsubscriber (cleanup)
 				return () => {};
 			}
 		};
 	}
 
 	editParticipant(participant: ParticipantModel): Subscription<Error | null> {
-		const mockDataProvider = new MockParticipantDataProvider();
 		return {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.editParticipant(participant)));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/participants/${participant.id}`;
+				const dto: ParticipantUpdateDTO = {
+					firstname: participant.firstname,
+					lastname: participant.lastname,
+					imageUrl: participant.imageUrl
+				};
+
+				fetch(url, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dto)
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}

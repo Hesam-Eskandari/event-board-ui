@@ -3,15 +3,29 @@ import type { CategoryService } from '$lib/services/category.service';
 import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
 import type { CategoryModel } from '$lib/entities/category';
+import { PUBLIC_BASE_API_URL } from '$env/static/public';
+import type {
+	CategoryCreateDTO,
+	CategoryReadDTO,
+	CategoryUpdateDTO
+} from '$lib/api-services/dtos/category';
 
 export class CategoryApiService implements CategoryService {
 	addCategory(title: string): Subscription<DataStatus<CategoryModel | null>> {
-		const mockDataProvider = new MockCategoryDataProvider();
 		return {
 			subscribe(run:Subscriber<DataStatus<CategoryModel | null>>, invalidate?:() => void):Unsubscriber {
 				invalidate?.()
-				Promise.resolve(new Response(JSON.stringify(mockDataProvider.addCategory(title))))
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/categories`;
+				const dto: CategoryCreateDTO = {
+					title: title
+				} as CategoryCreateDTO;
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dto)
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -27,13 +41,16 @@ export class CategoryApiService implements CategoryService {
 	}
 
 	deleteCategory(category: CategoryModel): Subscription<Error | null> {
-		const mockDataProvider = new MockCategoryDataProvider();
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.deleteCategory(category)));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/categories/${category.id}`;
+				fetch(url, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -50,13 +67,20 @@ export class CategoryApiService implements CategoryService {
 	}
 
 	editCategory(category: CategoryModel): Subscription<Error | null> {
-		const mockDataProvider = new MockCategoryDataProvider();
 		return {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.editCategory(category)));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/categories/${category.id}`;
+				const dto: CategoryUpdateDTO = {
+					title: category.title
+				} as CategoryUpdateDTO;
+				fetch(url, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dto)
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
@@ -71,17 +95,24 @@ export class CategoryApiService implements CategoryService {
 	}
 
 	getCategories(): Subscription<DataStatus<CategoryModel[]>> {
-		const mockDataProvider = new MockCategoryDataProvider();
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const res = new Response(JSON.stringify(mockDataProvider.getCategories()));
-				Promise.resolve(res)
-					.then(async (res: Response) => {
+				const url: string = `${PUBLIC_BASE_API_URL}/categories`;
+				fetch(url,  {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}).then(async (res: Response) => {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
-						const data: CategoryModel[] = await res.json();
+						const raw: CategoryReadDTO[] = await res.json();
+						const data = raw.map((dto: CategoryReadDTO) => ({
+							title: dto.title,
+							id: dto.id
+						} as CategoryModel));
 						run({ data, error: null, status: 'success' });
 					})
 					.catch((err) => {
