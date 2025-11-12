@@ -12,16 +12,24 @@ import  {
 	type CatPartPieChartDataParams,
 	type CatPartPieChartOptionParams
 } from '$lib/chart-builder/pie-chart-builder/category-participants-pie-chart-builder';
+import type {
+	PartCatLineChartDataParams,
+	PartCatLineChartOptionParams
+} from '$lib/chart-builder/line-chart-builder/participant-categories-line-chart-builder';
+import type {
+	CatPartLineChartDataParams,
+	CatPartLineChartOptionParams
+} from '$lib/chart-builder/line-chart-builder/category-participants-line-chart-builder';
 
-export type PieChartDataParams = PartCatPieChartDataParams | CatPartPieChartDataParams;
-export type PieChartOptionParams = PartCatPieChartOptionParams | CatPartPieChartOptionParams;
-export type PieChartType = 'person-category' | 'category-person';
+export type LineChartDataParams = PartCatLineChartDataParams | CatPartLineChartDataParams;
+export type LineChartOptionParams = PartCatLineChartOptionParams | CatPartLineChartOptionParams;
+export type LineChartType = 'person-category' | 'category-person';
 
 
-export class PieChartBuilderFactory<T extends PieChartOptionParams, U extends PieChartDataParams> implements ChartBuilder<T, U> {
+export class LineChartBuilderFactory<T extends LineChartOptionParams, U extends LineChartDataParams> implements ChartBuilder<T, U> {
 	private chartBuilder: ChartBuilder<T, U>;
-	constructor(private pieChartType: PieChartType) {
-		switch (this.pieChartType) {
+	constructor(private chartType: LineChartType) {
+		switch (this.chartType) {
 			case 'category-person':
 				this.chartBuilder = new CategoriesParticipantPieChartBuilder<T, U>();
 				break;

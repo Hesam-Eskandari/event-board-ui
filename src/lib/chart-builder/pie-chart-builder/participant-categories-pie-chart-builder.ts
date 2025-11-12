@@ -4,15 +4,15 @@ import type { ChartOption } from '$lib/types/types';
 import type { ChartBuilder } from '$lib/chart-builder/chart-builder';
 import type { Period } from '$lib/entities/period';
 
-export interface SPCPieChartOptionParams {
+export interface PartCatPieChartOptionParams {
 	title: string;
 	subtitle: string;
 }
 
-export type SPCPieChartDataParams = EventModel[];
+export type PartCatPieChartDataParams = EventModel[];
 
 
-export class ParticipantCategoriesPieChartBuilder<T extends SPCPieChartOptionParams, U extends SPCPieChartDataParams> implements ChartBuilder<T, U> {
+export class ParticipantCategoriesPieChartBuilder<T extends PartCatPieChartOptionParams, U extends PartCatPieChartDataParams> implements ChartBuilder<T, U> {
 
 	generateParams(period:Period | null, events:EventModel[]):{optionParams: T; dataParams: U} {
 		const optionParams = {title: 'Categories', subtitle: period === null ? 'Period' : DateTimeHelper.getShortTextDuration(period.duration)} as T;
