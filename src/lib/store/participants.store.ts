@@ -3,7 +3,7 @@ import { derived, type Writable, writable } from 'svelte/store';
 import type { DataStatus, Status } from '$lib/entities/data-status';
 import type { Subscription } from '$lib/entities/subscription';
 import type { ParticipantService } from '$lib/services/participant.service';
-import { ParticipantApiService } from '$lib/api-services/participantApi.service';
+import { ParticipantApiService } from '$lib/services/api-services/participantApi.service';
 
 class ParticipantState implements DataStatus<ParticipantModel[]>{
 		error: Error | null = null;
@@ -56,7 +56,7 @@ export class ParticipantStore implements ParticipantService {
 						state.status = 'error';
 					} else {
 						state.status = 'success';
-						state.data = [ds.data!, ...state.data];
+						state.data = [...state.data, ds.data!];
 						model = ds.data!;
 					}
 					return state;

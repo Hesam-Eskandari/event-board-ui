@@ -4,7 +4,7 @@ import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
 import type { EventModel } from '$lib/entities/event';
 import { PUBLIC_BASE_API_URL } from '$env/static/public';
-import type { EventCreateDTO, EventReadDTO, EventUpdateDTO } from '$lib/api-services/dtos/event';
+import type { EventCreateDTO, EventReadDTO, EventUpdateDTO } from '$lib/services/api-services/dtos/event';
 import type { CategoryModel } from '$lib/entities/category';
 
 export class EventApiService implements EventService {

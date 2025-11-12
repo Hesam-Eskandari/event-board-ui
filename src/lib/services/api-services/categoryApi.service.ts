@@ -8,7 +8,7 @@ import type {
 	CategoryCreateDTO,
 	CategoryReadDTO,
 	CategoryUpdateDTO
-} from '$lib/api-services/dtos/category';
+} from '$lib/services/api-services/dtos/category';
 
 export class CategoryApiService implements CategoryService {
 	addCategory(title: string): Subscription<DataStatus<CategoryModel | null>> {

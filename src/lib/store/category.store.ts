@@ -3,7 +3,7 @@ import type { CategoryService } from '$lib/services/category.service';
 import type { DataStatus, Status } from '$lib/entities/data-status';
 import type { Subscription } from '$lib/entities/subscription';
 import type { CategoryModel } from '$lib/entities/category';
-import { CategoryApiService } from '$lib/api-services/categoryApi.service';
+import { CategoryApiService } from '$lib/services/api-services/categoryApi.service';
 
 class CategoryState implements DataStatus<CategoryModel[]>{
 	error: Error | null = null;
@@ -56,7 +56,7 @@ export class CategoryStore implements CategoryService {
 						state.status = 'error';
 					} else {
 						state.status = 'success';
-						state.data = [ds.data!, ...state.data];
+						state.data = [...state.data, ds.data!];
 						model = ds.data!;
 					}
 					return state;

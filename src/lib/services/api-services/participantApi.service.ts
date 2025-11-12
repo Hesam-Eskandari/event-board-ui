@@ -4,7 +4,7 @@ import type { ParticipantModel } from '$lib/entities/participant';
 import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
 import { PUBLIC_BASE_API_URL } from '$env/static/public';
-import type { ParticipantCreateDTO, ParticipantReadDTO, ParticipantUpdateDTO } from '$lib/api-services/dtos/participant';
+import type { ParticipantCreateDTO, ParticipantReadDTO, ParticipantUpdateDTO } from '$lib/services/api-services/dtos/participant';
 
 export class ParticipantApiService implements ParticipantService {
 	addParticipant(p:ParticipantModel): Subscription<DataStatus<ParticipantModel | null>> {

@@ -1,5 +1,5 @@
-import type { CategoryReadDTO } from '$lib/api-services/dtos/category';
-import type { ParticipantReadDTO } from '$lib/api-services/dtos/participant';
+import type { CategoryReadDTO } from '$lib/services/api-services/dtos/category';
+import type { ParticipantReadDTO } from '$lib/services/api-services/dtos/participant';
 
 export interface EventCreateDTO {
 	title: string;

@@ -2,7 +2,7 @@ import { derived, type Writable, writable } from 'svelte/store';
 import type { DataStatus, Status } from '$lib/entities/data-status';
 import type { Subscription } from '$lib/entities/subscription';
 import type { EventModel } from '$lib/entities/event';
-import { EventApiService } from '$lib/api-services/eventApi.service';
+import { EventApiService } from '$lib/services/api-services/eventApi.service';
 import type { EventService } from '$lib/services/event.service';
 
 class EventState implements DataStatus<EventModel[]>{
@@ -56,7 +56,7 @@ export class EventStore implements EventService {
 						state.status = 'error';
 					} else {
 						state.status = 'success';
-						state.data = [ds.data!, ...state.data];
+						state.data = [...state.data, ds.data!];
 						model = ds.data!;
 					}
 					return state;
