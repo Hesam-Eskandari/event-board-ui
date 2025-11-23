@@ -3,7 +3,7 @@
 	import CategoriesGrid from '$lib/components/category/CategoriesGrid.svelte';
 	import AddCategoryForm from '$lib/components/category/AddCategoryForm.svelte';
 	import EditCategoryForm from '$lib/components/category/EditCategoryForm.svelte';
-	import Button from '$lib/components/button.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import type { DataStatus } from '$lib/entities/data-status';
 	import { onDestroy, onMount } from 'svelte';
 	import type { Unsubscriber } from 'svelte/store';

@@ -4,7 +4,7 @@
 	let { onClick, mode='success', type='button', disabled=false, children }:
 		{
 			onClick?: () => any;
-			mode?:'success' | 'danger' | 'peace';
+			mode?:'success' | 'danger' | 'peace' | 'warn';
 			type: 'button'  | 'submit' | 'reset' | null | undefined;
 			disabled?: boolean;
 			children: Snippet;
@@ -37,12 +37,24 @@
 				background-color: #dc3545;
 		}
 
+		.danger:disabled {
+				background-color: #bb7777;
+		}
+
 		.peace {
 				background-color: #07ab07;
 		}
 
 		.peace:disabled {
 				background-color: #77bb77;
+		}
+
+		.warn {
+				background-color: #ffc107;
+		}
+
+		.warn:disabled {
+				background-color: #bbbb77;
 		}
 </style>
 <button class="{mode}" {type} onclick={click} {disabled}>{@render children?.()}</button>

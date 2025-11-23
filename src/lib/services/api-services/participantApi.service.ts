@@ -26,7 +26,7 @@ export class ParticipantApiService implements ParticipantService {
 					...TokenSnapshotStore.getTokenQParam()
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run({ data: null, error: new Error('token not found: cannot add participant without a tenant token'), status: 'error' });
+					run({ data: null, error: new Error('token not found: cannot add participant without a workspace token'), status: 'error' });
 					return () => {};
 				}
 				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/`), params);
@@ -66,7 +66,7 @@ export class ParticipantApiService implements ParticipantService {
 				});
 				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/`), params);
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run({ data: [], error: new Error('token not found: cannot get participants without a tenant token'), status: 'error' });
+					run({ data: [], error: new Error('token not found: cannot get participants without a workspace token'), status: 'error' });
 					return () => {};
 				}
 				fetch(url, {
@@ -85,11 +85,9 @@ export class ParticipantApiService implements ParticipantService {
 							imageUrl: dto.imageUrl,
 							id: dto.id
 						} as ParticipantModel));
-						console.log(data)
 						run({ data, error: null, status: 'success' });
 					})
 					.catch((err) => {
-						console.log(err);
 						run({ data: [], error: err, status: 'error' });
 					});
 
@@ -106,7 +104,7 @@ export class ParticipantApiService implements ParticipantService {
 					...TokenSnapshotStore.getTokenQParam()
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run(new Error('token not found: cannot delete participant without a tenant token'));
+					run(new Error('token not found: cannot delete participant without a workspace token'));
 					return () => {};
 				}
 				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/${participant.id}`), params);
@@ -138,7 +136,7 @@ export class ParticipantApiService implements ParticipantService {
 					...TokenSnapshotStore.getTokenQParam()
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run(new Error('token not found: cannot edit participant without a tenant token'));
+					run(new Error('token not found: cannot edit participant without a workspace token'));
 					return () => {};
 				}
 				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/${participant.id}`), params);

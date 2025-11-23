@@ -3,7 +3,7 @@
 	import AddEventForm from '$lib/components/event/AddEventForm.svelte';
 	import EventsGrid from '$lib/components/event/EventsGrid.svelte';
 	import type { ParticipantModel } from '$lib/entities/participant';
-	import Button from '$lib/components/button.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import type { DataStatus } from '$lib/entities/data-status';
 	import { onDestroy, onMount } from 'svelte';
 	import type { Unsubscriber } from 'svelte/store';

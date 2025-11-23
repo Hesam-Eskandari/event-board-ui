@@ -33,7 +33,6 @@ export class TenantStore implements TenantService {
 			return state;
 		});
 		this.apiService.createTenant().subscribe((ds: DataStatus<TenantModel | null>) => {
-			console.log('inside', ds);
 			this.state.update(() => ({
 				error: ds.error,
 				data: ds.data,

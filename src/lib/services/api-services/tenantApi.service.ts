@@ -25,7 +25,7 @@ export class TenantApiService implements TenantService {
 					token
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run({data: null, error: new Error('token not found: cannot get tenant info without a tenant token'), status: 'error'});
+					run({data: null, error: new Error('token not found: cannot get workspace info without a workspace token'), status: 'error'});
 					return () => {};
 				}
 				const url = TenantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/tokens/${token}`), params);
@@ -35,6 +35,8 @@ export class TenantApiService implements TenantService {
 							throw new Error(`failed getting tenant`);
 						}
 						const dto: TenantReadDTO = await res.json();
+						// TODO: remove this line once backend supports tags
+						dto.tag = 'Home';
 						const data = dto as TenantModel;
 						run({data, error: null, status: 'success'});
 					})
@@ -55,7 +57,7 @@ export class TenantApiService implements TenantService {
 					...TokenSnapshotStore.getTokenQParam()
 				});
 				if (TokenSnapshotStore.hasToken(params)) {
-					run({data: null, error: new Error('failed generating tenant. workspace is already loaded.'), status: 'error'});
+					run({data: null, error: new Error('failed generating workspace. workspace is already loaded.'), status: 'error'});
 					return () => {};
 				}
 				const url = TenantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/tokens/`), params);

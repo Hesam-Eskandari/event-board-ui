@@ -7,7 +7,7 @@
 	import AddParticipantForm from '$lib/components/participant/AddParticipantForm.svelte';
 	import EditParticipantForm from '$lib/components/participant/EditParticipantForm.svelte';
 	import type { ParticipantModel } from '$lib/entities/participant';
-	import Button from '$lib/components/button.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import type { DataStatus } from '$lib/entities/data-status';
 
 	const service = ParticipantStore.getInstance();

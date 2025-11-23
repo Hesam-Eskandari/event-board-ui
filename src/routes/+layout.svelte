@@ -2,10 +2,36 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
 	import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
+	import type { DataStatus } from '$lib/entities/data-status';
+	import { TenantStore } from '$lib/store/tenant.store';
+	import { onMount } from 'svelte';
 
-	const token = page.url.searchParams.get('token');
-	TokenSnapshotStore.saveToken(token);
 	let { children } = $props();
+	const tenantService = TenantStore.getInstance();
+	let tenant: TenantModel | null = $state(null);
+
+	onMount(() => {
+		const token: string | null = TokenSnapshotStore.getToken();
+		if (token != null) {
+			loadTenant(token);
+		}
+	});
+
+
+
+	function loadTenant(token: string) {
+		tenantService.getTenant(token).subscribe((ds: DataStatus<TenantModel | null>) => {
+			if (ds.status === 'success') {
+				tenant = ds.data!;
+			}
+		});
+	}
+
+	function buildUrl(path: string) {
+		const url = new URL(page.url);
+		url.pathname = path;
+		return url.toString();
+	}
 </script>
 
 <svelte:head>
@@ -13,10 +39,12 @@
 </svelte:head>
 
 <nav>
-	<a href="/">Home</a>
-	<a href="/participants">Participants</a>
-	<a href="/categories">Categories</a>
-	<a href="/events">Events</a>
+	<a href="{buildUrl('/')}">Home</a>
+	{#if tenant != null}
+		<a href="{buildUrl('/participants')}">Participants</a>
+		<a href="{buildUrl('/categories')}">Categories</a>
+		<a href="{buildUrl('/events')}">Events</a>
+	{/if}
 </nav>
 
 {@render children?.()}

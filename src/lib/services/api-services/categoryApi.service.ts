@@ -30,7 +30,7 @@ export class CategoryApiService implements CategoryService {
 					...TokenSnapshotStore.getTokenQParam()
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run({ data: null, error: new Error('token not found: cannot add category without a tenant token'), status: 'error' });
+					run({ data: null, error: new Error('token not found: cannot add category without a workspace token'), status: 'error' });
 					return () => {};
 				}
 				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/`), params);
@@ -67,7 +67,7 @@ export class CategoryApiService implements CategoryService {
 					...TokenSnapshotStore.getTokenQParam()
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run(new Error('token not found: cannot delete category without a tenant token'));
+					run(new Error('token not found: cannot delete category without a workspace token'));
 					return () => {};
 				}
 				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/${category.id}`), params);
@@ -101,7 +101,7 @@ export class CategoryApiService implements CategoryService {
 
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run(new Error('token not found: cannot edit category without a tenant token'));
+					run(new Error('token not found: cannot edit category without a workspace token'));
 					return () => {};
 				}
 				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/${category.id}`), params);
@@ -136,7 +136,7 @@ export class CategoryApiService implements CategoryService {
 					...TokenSnapshotStore.getTokenQParam()
 				});
 				if (!TokenSnapshotStore.hasToken(params)) {
-					run({ data: [], error: new Error('token not found: cannot get categories without a tenant token'), status: 'error' });
+					run({ data: [], error: new Error('token not found: cannot get categories without a workspace token'), status: 'error' });
 					return () => {};
 				}
 				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/`), params);
