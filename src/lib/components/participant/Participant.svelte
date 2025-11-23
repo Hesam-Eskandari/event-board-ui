@@ -81,8 +81,8 @@
 	<div class="content">
 		<div>{participant.firstname} {participant.lastname}</div>
 		<div>
-			<Button type="button" onClick="{() => onEdit(participant)}" {disabled}>Edit</Button>
-			<Button type="button" onClick="{() => onDelete(participant)}" {disabled} mode="danger">Delete</Button>
+			<Button type="button" onClick={() => onEdit(participant)} {disabled}>Edit</Button>
+			<Button type="button" onClick={() => onDelete(participant)} {disabled} mode="danger">Delete</Button>
 		</div>
 	</div>
 </div>

@@ -1,5 +1,17 @@
-<script>
-	let { onCancel, onClose, title } = $props();
+<script lang="ts">
+	import type { Snippet } from 'svelte';
+
+	let {
+		onCancel,
+		onClose,
+		title,
+		children
+	} : {
+		onCancel: () => void;
+		onClose: () => void;
+		title: string;
+		children: Snippet;
+	} = $props();
 </script>
 
 <style>
@@ -63,6 +75,6 @@
 		<button onclick="{onClose}">X</button>
 	</div>
 	<div class="content">
-		<slot/>
+		{@render children?.()}
 	</div>
 </div>

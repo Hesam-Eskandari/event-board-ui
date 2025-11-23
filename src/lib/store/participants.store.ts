@@ -15,6 +15,7 @@ export class ParticipantStore implements ParticipantService {
 	private static instance: ParticipantStore | null = null;
 	private state: Writable<ParticipantState> = writable(new ParticipantState());
 	private apiService: ParticipantService = new ParticipantApiService();
+	private stateFetchStatus: Status = 'success';
 	private constructor() {}
 
 	static getInstance(): ParticipantStore {
@@ -25,6 +26,10 @@ export class ParticipantStore implements ParticipantService {
 	}
 
 	getParticipants(): Subscription<DataStatus<ParticipantModel[]>> {
+		if (this.stateFetchStatus === 'loading') {
+			return derived(this.state, ($state, set) => set($state));
+		}
+		this.stateFetchStatus = 'loading';
 		this.state.update((state) => {
 			state.status = 'loading';
 			state.error = null;
@@ -36,6 +41,7 @@ export class ParticipantStore implements ParticipantService {
 				data: ds.data,
 				status: ds.status
 			}));
+			this.stateFetchStatus = ds.status;
 		})();
 		return derived(this.state, ($state, set) => set($state));
 	}

@@ -1,11 +1,11 @@
 <script>
-	import Modal from '../modal.svelte';
+	import Modal from '../Modal.svelte';
 	import Button from '../Button.svelte';
 	let  { onClose, onCancel, onEdit, title = $bindable(), disabled} = $props();
 
 </script>
 <Modal {onClose} {onCancel} title="Edit Category">
-	<form on:submit="{onEdit}">
+	<form onsubmit="{onEdit}">
 		<div>
 			<label for="title">Title:</label>
 			<input type="text" id="title" bind:value="{title}" />

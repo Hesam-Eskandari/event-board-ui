@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Modal from '../modal.svelte';
+	import Modal from '../Modal.svelte';
 	import Button from '../Button.svelte';
 	import type { ParticipantModel } from '$lib/entities/participant.js';
 	let  {
@@ -8,8 +8,8 @@
 		onEdit,
 		participant
 	}: {
-		onClose: Function;
-		onCancel: Function;
+		onClose: () => void;
+		onCancel: () => void;
 		onEdit: (participant: ParticipantModel) => void;
 		participant: ParticipantModel;
 	} = $props();
@@ -28,7 +28,7 @@
 
 </script>
 <Modal {onClose} {onCancel} title="Edit Participant">
-		<form on:submit="{editParticipant}">
+		<form onsubmit="{editParticipant}">
 			<div>
 				<label for="firstname">Firstname:</label>
 				<input type="text" id="firstname" bind:value="{firstname}" />

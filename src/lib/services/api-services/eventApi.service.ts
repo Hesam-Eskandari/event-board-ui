@@ -6,13 +6,31 @@ import type { EventModel } from '$lib/entities/event';
 import { PUBLIC_BASE_API_URL } from '$env/static/public';
 import type { EventCreateDTO, EventReadDTO, EventUpdateDTO } from '$lib/services/api-services/dtos/event';
 import type { CategoryModel } from '$lib/entities/category';
+import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 
 export class EventApiService implements EventService {
+
+	private static addQParams(url: URL,  params: URLSearchParams): URL {
+		params.entries().forEach(([key, value]) => {
+			if (value != null) {
+				url.searchParams.set(key, String(value));
+			}
+		});
+		return url;
+	}
+
 	addEvent(event: EventModel): Subscription<DataStatus<EventModel | null>> {
 		return {
 			subscribe(run:Subscriber<DataStatus<EventModel | null>>, invalidate?:() => void):Unsubscriber {
 				invalidate?.()
-				const url: string = `${PUBLIC_BASE_API_URL}/events/`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run({ data: null, error: new Error('token not found: cannot add event without a tenant token'), status: 'error' });
+					return () => {};
+				}
+				const url: URL = EventApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/events/`), params);
 				const dto: EventCreateDTO = {
 					title: event.title,
 					start: event.start.toISOString(),
@@ -50,7 +68,14 @@ export class EventApiService implements EventService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/events/${event.id}`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run(new Error('token not found: cannot delete event without a tenant token'));
+					return () => {};
+				}
+				const url: URL = EventApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/events/${event.id}`), params);
 				fetch(url, {
 					method: 'DELETE',
 					headers: {
@@ -76,7 +101,14 @@ export class EventApiService implements EventService {
 		return {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/events/${event.id}`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run(new Error('token not found: cannot edit event without a tenant token'));
+					return () => {};
+				}
+				const url: URL = EventApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/events/${event.id}`), params);
 				const dto: EventUpdateDTO = {
 					title: event.title,
 					start: event.start.toISOString(),
@@ -109,7 +141,14 @@ export class EventApiService implements EventService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/events/`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run({ data: [], error: new Error('token not found: cannot get events without a tenant token'), status: 'error' });
+					return () => {};
+				}
+				const url: URL = EventApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/events/`), params);
 				fetch(url, {
 					method: 'GET',
 					headers: {

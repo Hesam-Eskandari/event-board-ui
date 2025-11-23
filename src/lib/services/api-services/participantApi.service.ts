@@ -5,13 +5,31 @@ import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
 import { PUBLIC_BASE_API_URL } from '$env/static/public';
 import type { ParticipantCreateDTO, ParticipantReadDTO, ParticipantUpdateDTO } from '$lib/services/api-services/dtos/participant';
+import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 
 export class ParticipantApiService implements ParticipantService {
+
+	private static addQParams(url: URL,  params: URLSearchParams): URL {
+		params.entries().forEach(([key, value]) => {
+			if (value != null) {
+				url.searchParams.set(key, String(value));
+			}
+		});
+		return url;
+	}
+
 	addParticipant(p:ParticipantModel): Subscription<DataStatus<ParticipantModel | null>> {
 		return {
 			subscribe: (run, invalidate) => {
 				invalidate?.();
-				const url = `${PUBLIC_BASE_API_URL}/participants/`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run({ data: null, error: new Error('token not found: cannot add participant without a tenant token'), status: 'error' });
+					return () => {};
+				}
+				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/`), params);
 				const dto = {
 					firstname: p.firstname,
 					lastname: p.lastname,
@@ -43,7 +61,14 @@ export class ParticipantApiService implements ParticipantService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url = `${PUBLIC_BASE_API_URL}/participants/`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/`), params);
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run({ data: [], error: new Error('token not found: cannot get participants without a tenant token'), status: 'error' });
+					return () => {};
+				}
 				fetch(url, {
 					method: 'GET',
 					headers: {
@@ -77,7 +102,14 @@ export class ParticipantApiService implements ParticipantService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url = `${PUBLIC_BASE_API_URL}/participants/${participant.id}`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run(new Error('token not found: cannot delete participant without a tenant token'));
+					return () => {};
+				}
+				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/${participant.id}`), params);
 				fetch(url, {
 					method: 'DELETE',
 					headers: {
@@ -102,7 +134,14 @@ export class ParticipantApiService implements ParticipantService {
 		return {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/participants/${participant.id}`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run(new Error('token not found: cannot edit participant without a tenant token'));
+					return () => {};
+				}
+				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/${participant.id}`), params);
 				const dto: ParticipantUpdateDTO = {
 					firstname: participant.firstname,
 					lastname: participant.lastname,

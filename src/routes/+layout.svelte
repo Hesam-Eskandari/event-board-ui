@@ -1,6 +1,10 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import { page } from '$app/state';
+	import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 
+	const token = page.url.searchParams.get('token');
+	TokenSnapshotStore.saveToken(token);
 	let { children } = $props();
 </script>
 

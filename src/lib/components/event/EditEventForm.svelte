@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Modal from '../modal.svelte';
+	import Modal from '../Modal.svelte';
 	import Button from '../Button.svelte';
 	import { type EventModel } from '$lib/entities/event';
 	import type { CategoryModel } from '$lib/entities/category';
@@ -32,7 +32,7 @@
 	}
 </script>
 <Modal {onClose} {onCancel} title="Add Event">
-	<form on:submit="{onEditEvent}">
+	<form onsubmit="{onEditEvent}">
 		<div>
 			<label for="title">Title:</label>
 			<input type="text" name="title" id="title" bind:value="{title}" />

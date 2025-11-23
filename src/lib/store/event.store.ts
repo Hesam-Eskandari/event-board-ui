@@ -14,6 +14,7 @@ class EventState implements DataStatus<EventModel[]>{
 export class EventStore implements EventService {
 	private static instance: EventStore | null = null;
 	private state: Writable<EventState> = writable(new EventState());
+	private stateFetchStatus: Status = 'success';
 	private apiService: EventService = new EventApiService();
 	private constructor() {}
 
@@ -25,6 +26,10 @@ export class EventStore implements EventService {
 	}
 
 	getEvents(): Subscription<DataStatus<EventModel[]>> {
+		if (this.stateFetchStatus === 'loading') {
+			return derived(this.state, ($state, set) => set($state));
+		}
+		this.stateFetchStatus = 'loading';
 		this.state.update((state) => {
 			state.status = 'loading';
 			state.error = null;
@@ -36,6 +41,7 @@ export class EventStore implements EventService {
 				data: ds.data,
 				status: ds.status
 			}));
+			this.stateFetchStatus = ds.status;
 		})();
 		return derived(this.state, ($state, set) => set($state));
 	}

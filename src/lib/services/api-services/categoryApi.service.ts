@@ -9,13 +9,31 @@ import type {
 	CategoryReadDTO,
 	CategoryUpdateDTO
 } from '$lib/services/api-services/dtos/category';
+import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 
 export class CategoryApiService implements CategoryService {
+
+	private static addQParams(url: URL,  params: URLSearchParams): URL {
+		params.entries().forEach(([key, value]) => {
+			if (value != null) {
+				url.searchParams.set(key, String(value));
+			}
+		});
+		return url;
+	}
+
 	addCategory(title: string): Subscription<DataStatus<CategoryModel | null>> {
 		return {
 			subscribe(run:Subscriber<DataStatus<CategoryModel | null>>, invalidate?:() => void):Unsubscriber {
 				invalidate?.()
-				const url: string = `${PUBLIC_BASE_API_URL}/categories/`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run({ data: null, error: new Error('token not found: cannot add category without a tenant token'), status: 'error' });
+					return () => {};
+				}
+				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/`), params);
 				const dto: CategoryCreateDTO = {
 					title: title
 				} as CategoryCreateDTO;
@@ -29,7 +47,8 @@ export class CategoryApiService implements CategoryService {
 						if (!res.ok) {
 							throw new Error(`Failed: ${res.status}`);
 						}
-						const data: CategoryModel = await res.json();
+						const dto: CategoryReadDTO = await res.json();
+						const data: CategoryModel = dto as CategoryModel;
 						run({ data, error: null, status: 'success' });
 					})
 					.catch((err: Error) => {
@@ -44,7 +63,14 @@ export class CategoryApiService implements CategoryService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/categories/${category.id}`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run(new Error('token not found: cannot delete category without a tenant token'));
+					return () => {};
+				}
+				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/${category.id}`), params);
 				fetch(url, {
 					method: 'DELETE',
 					headers: {
@@ -52,7 +78,7 @@ export class CategoryApiService implements CategoryService {
 					},
 				}).then(async (res: Response) => {
 						if (!res.ok) {
-							throw new Error(`Failed: ${res.status}`);
+							throw new Error(`failed: ${res.status}`);
 						}
 						run(null);
 					})
@@ -70,7 +96,15 @@ export class CategoryApiService implements CategoryService {
 		return {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/categories/${category.id}`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run(new Error('token not found: cannot edit category without a tenant token'));
+					return () => {};
+				}
+				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/${category.id}`), params);
 				const dto: CategoryUpdateDTO = {
 					title: category.title
 				} as CategoryUpdateDTO;
@@ -98,7 +132,14 @@ export class CategoryApiService implements CategoryService {
 		return {
 			subscribe(run, invalidate) {
 				invalidate?.();
-				const url: string = `${PUBLIC_BASE_API_URL}/categories/`;
+				const params = new URLSearchParams({
+					...TokenSnapshotStore.getTokenQParam()
+				});
+				if (!TokenSnapshotStore.hasToken(params)) {
+					run({ data: [], error: new Error('token not found: cannot get categories without a tenant token'), status: 'error' });
+					return () => {};
+				}
+				const url: URL = CategoryApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/categories/`), params);
 				fetch(url,  {
 					method: 'GET',
 					headers: {

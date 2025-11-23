@@ -6,7 +6,7 @@ Binding a reference in JS to HTML happens when putting the reference in single c
 
 ```sveltehtml
 <div>{variableName}</div>
-<button on:click={functionRef}>{buttonText}</button>
+<button onclick={functionRef}>{buttonText}</button>
 <textarea rows="4" cols="50" value="{description}"></textarea>
 ```
 
@@ -177,7 +177,7 @@ Example:
     values.push(last+1);
   }
 </script>
-<button on:click="{updateValues}">Update Values</button>
+<button onclick="{updateValues}">Update Values</button>
 { #each values as value }
   <div>{value}</div>
 { /each }
@@ -199,7 +199,7 @@ Example:
     values = [...values, last+1];
   }
 </script>
-<button on:click="{updateValues}">Update Values</button>
+<button onclick="{updateValues}">Update Values</button>
 { #each values as value }
   <div>{value}</div>
 { /each }
@@ -225,7 +225,7 @@ Example:
     orders = orders.slice(1);
   }
 </script>
-<button on:click="{removeFirst}">Delete First</button>
+<button onclick="{removeFirst}">Delete First</button>
 { #each orders as order }
   <OrderComponent madeBy="{order.madeBy}" />
 { /each }
@@ -259,7 +259,7 @@ Providing a unique key allows Svelte no the render an element that does not need
 Once allows an event to execute only once.
 Example:
 ```sveltehtml
-<button on:click|pipe="{apply}">Apply</button>
+<button onclick|pipe="{apply}">Apply</button>
 ```
 An alternative approach could be to handle a logic in the `apply` method to make sure the button cannot be used multiple times.
 
@@ -274,7 +274,7 @@ This will prevent multiple events being executed with one trigger.
 For example, if there is a bookmark button inside a clickable UI card, bookmarking is not expected to select the card and open it.  
 So one event for the inner button (which is the bookmark button) should be executed and the propagation of the event to the outer button should be prevented.  
 ```sveltehtml
-<button on:click|stopPropagation="{() => bookmark(item)}">Bookmark</button>
+<button onclick|stopPropagation="{() => bookmark(item)}">Bookmark</button>
 ```
 An alternative approach could be to pass the event to the `bookmark(event)` method and use `event.stopPropagation()` in the bookmark method.
 
@@ -341,7 +341,7 @@ A child component can forward an event without handling it directly.
 
 Example: in product item component.
 ```sveltehtml
-<button on:click>Delete</button> 
+<button onclick>Delete</button> 
 <button on:click>Add to Cart</button> 
 ```
 

@@ -1,10 +1,13 @@
 <script lang="ts">
-	let { onClick, mode='success', type='button', disabled=false }:
+	import type { Snippet } from 'svelte';
+
+	let { onClick, mode='success', type='button', disabled=false, children }:
 		{
 			onClick?: () => any;
 			mode?:'success' | 'danger' | 'peace';
 			type: 'button'  | 'submit' | 'reset' | null | undefined;
 			disabled?: boolean;
+			children: Snippet;
 		} = $props();
 
 	function click(e: MouseEvent) {
@@ -42,4 +45,4 @@
 				background-color: #77bb77;
 		}
 </style>
-<button class="{mode}" {type} on:click={click} {disabled}><slot /></button>
+<button class="{mode}" {type} onclick={click} {disabled}>{@render children?.()}</button>
