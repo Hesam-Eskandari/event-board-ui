@@ -4,8 +4,8 @@
 	let { events=[], onDelete, onEdit }:
 		{
 			events: EventModel[],
-			onDelete: (participant: EventModel) => void,
-			onEdit: (participant: EventModel) => void,
+			onDelete: (event: EventModel) => void,
+			onEdit: (event: EventModel) => void,
 		} = $props();
 </script>
 <style>

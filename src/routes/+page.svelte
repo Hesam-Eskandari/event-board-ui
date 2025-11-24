@@ -55,8 +55,10 @@
 				tenant = ds.data!;
 				message.status = 'Workspace loaded successfully';
 				message.welcome = `Welcome back to the "${tenant.tag}" workspace`;
+				const newUrl = new URL(page.url);
+				newUrl.searchParams.set('token', tenant.adminToken ?? tenant.editorToken ?? tenant.visitorToken);
+				goto(newUrl.toString(), { keepFocus: true, noScroll: true });
 			}
-
 		});
 	}
 

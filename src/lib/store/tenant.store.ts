@@ -14,7 +14,7 @@ export class TenantStore implements TenantService {
 	private state: Writable<TenantState> = writable(new TenantState());
 	private static instance: TenantStore | null = null;
 	private apiService: TenantService = new TenantApiService();
-	private stateFetchStatus: Status = 'success';
+	private stateFetchStatus: Status | 'never' = 'never';
 	
 	private constructor() {}
 	
@@ -43,7 +43,7 @@ export class TenantStore implements TenantService {
 	}
 
 	getTenant(token: string): Subscription<DataStatus<TenantModel | null>> {
-		if (this.stateFetchStatus === 'loading') {
+		if (this.stateFetchStatus === 'loading' || this.stateFetchStatus === 'success') {
 			return derived(this.state, ($state, set) => set($state));
 		}
 		this.stateFetchStatus = 'loading';

@@ -15,7 +15,7 @@ export class CategoryStore implements CategoryService {
 	private static instance: CategoryStore | null = null;
 	private state: Writable<CategoryState> = writable(new CategoryState());
 	private apiService: CategoryService = new CategoryApiService();
-	private stateFetchStatus: Status = 'success';
+	private stateFetchStatus: Status | 'never' = 'never';
 	private constructor() {}
 
 	static getInstance(): CategoryStore {
@@ -26,7 +26,7 @@ export class CategoryStore implements CategoryService {
 	}
 
 	getCategories(): Subscription<DataStatus<CategoryModel[]>> {
-		if (this.stateFetchStatus === 'loading') {
+		if (this.stateFetchStatus === 'loading' || this.stateFetchStatus === 'success') {
 			return derived(this.state, ($state, set) => set($state));
 		}
 		this.stateFetchStatus = 'loading';

@@ -9,6 +9,7 @@
 	import type { ParticipantModel } from '$lib/entities/participant';
 	import Button from '$lib/components/Button.svelte';
 	import type { DataStatus } from '$lib/entities/data-status';
+	import { page } from '$app/state';
 
 	const service = ParticipantStore.getInstance();
 	let subscription: Unsubscriber | null = null;
@@ -67,8 +68,15 @@
 		toggleEditForm()
 	}
 
+	function buildUrl(path: string) {
+		const url = new URL(page.url);
+		url.pathname = path;
+		return url.toString();
+	}
+
 	function onSelect(id: string) {
-		goto(`/participants/${id}`);
+		console.log('navigate to par it');
+		goto(buildUrl(`/participants/${id}`));
 	}
 </script>
 

@@ -10,6 +10,7 @@
 	import type { CategoryModel } from '$lib/entities/category';
 	import { CategoryStore } from '$lib/store/category.store';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 
 	const service = CategoryStore.getInstance();
 	let subscription: Unsubscriber | null = null;
@@ -75,8 +76,14 @@
 		showEditForm = false;
 	}
 
+	function buildUrl(path: string) {
+		const url = new URL(page.url);
+		url.pathname = path;
+		return url.toString();
+	}
+
 	function onSelect(id: string) {
-		goto(`/categories/${id}`);
+		goto(buildUrl(`/categories/${id}`));
 	}
 </script>
 
