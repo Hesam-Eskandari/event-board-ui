@@ -6,27 +6,18 @@ import type { EventModel } from '$lib/entities/event';
 import { PUBLIC_BASE_API_URL } from '$env/static/public';
 import type { EventCreateDTO, EventReadDTO, EventUpdateDTO } from '$lib/services/api-services/dtos/event';
 import type { CategoryModel } from '$lib/entities/category';
-import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
+import { ApiService } from '$lib/services/api-services/api.service';
 
-export class EventApiService implements EventService {
-
-	private static addQParams(url: URL,  params: URLSearchParams): URL {
-		params.entries().forEach(([key, value]) => {
-			if (value != null) {
-				url.searchParams.set(key, String(value));
-			}
-		});
-		return url;
-	}
+export class EventApiService extends ApiService implements EventService {
 
 	addEvent(event: EventModel): Subscription<DataStatus<EventModel | null>> {
 		return {
 			subscribe(run:Subscriber<DataStatus<EventModel | null>>, invalidate?:() => void):Unsubscriber {
 				invalidate?.()
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...EventApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!EventApiService.hasToken(params)) {
 					run({ data: null, error: new Error('token not found: cannot add event without a workspace token'), status: 'error' });
 					return () => {};
 				}
@@ -69,9 +60,9 @@ export class EventApiService implements EventService {
 			subscribe(run, invalidate) {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...EventApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!EventApiService.hasToken(params)) {
 					run(new Error('token not found: cannot delete event without a workspace token'));
 					return () => {};
 				}
@@ -102,9 +93,9 @@ export class EventApiService implements EventService {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...EventApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!EventApiService.hasToken(params)) {
 					run(new Error('token not found: cannot edit event without a workspace token'));
 					return () => {};
 				}
@@ -142,9 +133,9 @@ export class EventApiService implements EventService {
 			subscribe(run, invalidate) {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...EventApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!EventApiService.hasToken(params)) {
 					run({ data: [], error: new Error('token not found: cannot get events without a workspace token'), status: 'error' });
 					return () => {};
 				}

@@ -4,7 +4,6 @@
 	import Button from "$lib/components/Button.svelte";
 	import { TenantStore } from '$lib/store/tenant.store.js';
 	import type { DataStatus } from '$lib/entities/data-status';
-	import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 	import { onMount } from 'svelte';
 	import LoadWorkspace from "$lib/components/workspace/LoadWorkspace.svelte";
 	import ExitWorkspace from "$lib/components/workspace/ExitWorkspace.svelte";
@@ -12,8 +11,15 @@
 	import SaveToLocalStorage from "$lib/components/workspace/SaveToLocalStorage.svelte";
 	import LocalStorageOverride from "$lib/components/workspace/LocalStorageOverride.svelte";
 	import { LocalStorageService } from '$lib/services/local-storage/localStorage.service';
+	import { TokenStore } from '$lib/store/token.store';
+	import { CategoryStore } from '$lib/store/category.store';
+	import { EventStore } from '$lib/store/event.store';
 
-	const tenantService = TenantStore.getInstance();
+	const tenantStore = TenantStore.getInstance();
+	const tokenStore = TokenStore.getInstance();
+	const categoryStore = CategoryStore.getInstance();
+	const eventStore = EventStore.getInstance();
+	const participantStore = TenantStore.getInstance();
 	let tenant: TenantModel | null = $state(null);
 	let showLoadModal = $state(false);
 	let showCreateModal = $state(false);
@@ -23,18 +29,15 @@
 	let message: { welcome: string; status: string; } = $state({ welcome: '', status: '' });
 
 	onMount(() => {
-		const token = TokenSnapshotStore.getToken();
-		if (token != null) {
-			loadTenant(token);
-		}
+		loadTenant();
 	});
 
 	function createTenant() {
-		tenantService.createTenant().subscribe((ds: DataStatus<TenantModel | null>) => {
+		tenantStore.createTenant().subscribe((ds: DataStatus<TenantModel | null>) => {
 			showLoadModal = false;
 			showCreateModal = false;
 			if (ds.status === 'success') {
-				TokenSnapshotStore.saveToken(ds.data!.adminToken);
+				tokenStore.setToken(ds.data!.adminToken);
 				tenant = ds.data!;
 				if (tenant?.adminToken != null) {
 					const newUrl = new URL(page.url);
@@ -47,8 +50,8 @@
 		});
 	}
 
-	function loadTenant(token: string) {
-		tenantService.getTenant(token).subscribe((ds: DataStatus<TenantModel | null>) => {
+	function loadTenant(token?: string) {
+		tenantStore.getTenant(token).subscribe((ds: DataStatus<TenantModel | null>) => {
 			showLoadModal = false;
 			showCreateModal = false;
 			if (ds.status === 'success') {
@@ -64,7 +67,11 @@
 
 	function exitWorkspace() {
 		tenant = null;
-		TokenSnapshotStore.saveToken(null);
+		tokenStore.setToken(null);
+		tenantStore.destroy();
+		participantStore.destroy();
+		categoryStore.destroy();
+		eventStore.destroy();
 		toggleExitModal();
 		goto('/', { keepFocus: true, noScroll: true });
 	}
@@ -111,7 +118,19 @@
 	}
 
 	function downloadAsFile() {
-
+		const token = tokenStore.getTokenSnapshot();
+		if (token == null || tenant?.tag == null) {
+			return;
+		}
+		const blob = new Blob([token], { type: 'text/plain' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `event-board__${tenant.tag}__${Date.now()}.token`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
 	}
 </script>
 

@@ -1,12 +1,12 @@
 import { redirect } from '@sveltejs/kit';
 import { browser } from '$app/environment';
-import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
+import { TokenStore } from '$lib/store/token.store';
 
 
 export const load = async ({ parent }) => {
 	await parent();
 	if (browser) {
-		const token = TokenSnapshotStore.getToken();
+		const token: string | null = TokenStore.getInstance().getTokenSnapshot();
 		if (token == null) {
 			throw redirect(303, `/`);
 		}

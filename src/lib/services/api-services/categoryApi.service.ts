@@ -9,27 +9,18 @@ import type {
 	CategoryReadDTO,
 	CategoryUpdateDTO
 } from '$lib/services/api-services/dtos/category';
-import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
+import { ApiService } from '$lib/services/api-services/api.service';
 
-export class CategoryApiService implements CategoryService {
-
-	private static addQParams(url: URL,  params: URLSearchParams): URL {
-		params.entries().forEach(([key, value]) => {
-			if (value != null) {
-				url.searchParams.set(key, String(value));
-			}
-		});
-		return url;
-	}
+export class CategoryApiService extends ApiService implements CategoryService {
 
 	addCategory(title: string): Subscription<DataStatus<CategoryModel | null>> {
 		return {
-			subscribe(run:Subscriber<DataStatus<CategoryModel | null>>, invalidate?:() => void):Unsubscriber {
+			subscribe(run:Subscriber<DataStatus<CategoryModel | null>>, invalidate?:() => void): Unsubscriber {
 				invalidate?.()
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...CategoryApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!CategoryApiService.hasToken(params)) {
 					run({ data: null, error: new Error('token not found: cannot add category without a workspace token'), status: 'error' });
 					return () => {};
 				}
@@ -64,9 +55,9 @@ export class CategoryApiService implements CategoryService {
 			subscribe(run, invalidate) {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...CategoryApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!CategoryApiService.hasToken(params)) {
 					run(new Error('token not found: cannot delete category without a workspace token'));
 					return () => {};
 				}
@@ -97,10 +88,9 @@ export class CategoryApiService implements CategoryService {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
-
+					...CategoryApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!CategoryApiService.hasToken(params)) {
 					run(new Error('token not found: cannot edit category without a workspace token'));
 					return () => {};
 				}
@@ -133,9 +123,9 @@ export class CategoryApiService implements CategoryService {
 			subscribe(run, invalidate) {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...CategoryApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!CategoryApiService.hasToken(params)) {
 					run({ data: [], error: new Error('token not found: cannot get categories without a workspace token'), status: 'error' });
 					return () => {};
 				}

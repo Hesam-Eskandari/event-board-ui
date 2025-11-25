@@ -8,14 +8,14 @@ import { ParticipantApiService } from '$lib/services/api-services/participantApi
 class ParticipantState implements DataStatus<ParticipantModel[]>{
 		error: Error | null = null;
 		data: ParticipantModel[] = [];
-		status: Status = 'success';
+		status: Status = 'never';
 }
 
 export class ParticipantStore implements ParticipantService {
 	private static instance: ParticipantStore | null = null;
 	private state: Writable<ParticipantState> = writable(new ParticipantState());
 	private apiService: ParticipantService = new ParticipantApiService();
-	private stateFetchStatus: Status | 'never' = 'never';
+	private stateFetchStatus: Status = 'never';
 	private constructor() {}
 
 	static getInstance(): ParticipantStore {
@@ -124,5 +124,14 @@ export class ParticipantStore implements ParticipantService {
 				})
 			})();
 		return derived(this.state, ($state, set) => set($state.error));
+	}
+
+	destroy() {
+		this.state.update((state: ParticipantState) => {
+			state.data = [];
+			state.error = null;
+			state.status = 'never';
+			return state;
+		});
 	}
 }

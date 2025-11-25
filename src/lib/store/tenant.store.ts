@@ -3,18 +3,19 @@ import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus, Status } from '$lib/entities/data-status';
 import { derived, writable, type Writable } from 'svelte/store';
 import { TenantApiService } from '$lib/services/api-services/tenantApi.service';
+import { TokenStore } from '$lib/store/token.store';
 
 class TenantState implements DataStatus<TenantModel | null> {
 	error: Error | null = null;
 	data: TenantModel | null = null;
-	status: Status = 'success';
+	status: Status = 'never';
 }
 
 export class TenantStore implements TenantService {
 	private state: Writable<TenantState> = writable(new TenantState());
 	private static instance: TenantStore | null = null;
 	private apiService: TenantService = new TenantApiService();
-	private stateFetchStatus: Status | 'never' = 'never';
+	private stateFetchStatus: Status = 'never';
 	
 	private constructor() {}
 	
@@ -42,7 +43,19 @@ export class TenantStore implements TenantService {
 		return derived(this.state, ($state, set) => set($state));
 	}
 
-	getTenant(token: string): Subscription<DataStatus<TenantModel | null>> {
+	getTenant(token?: string): Subscription<DataStatus<TenantModel | null>> {
+		if (token === undefined) {
+			const tokenStore = TokenStore.getInstance();
+			const inferredToken = tokenStore.getTokenSnapshot();
+			if (inferredToken === null) {
+				return derived(this.state, ($state, set) => set({
+					error: new Error('cannot request fetching tenant without a token'),
+					status: 'never',
+					data: null
+				}));
+			}
+			token = inferredToken;
+		}
 		if (this.stateFetchStatus === 'loading' || this.stateFetchStatus === 'success') {
 			return derived(this.state, ($state, set) => set($state));
 		}
@@ -62,5 +75,13 @@ export class TenantStore implements TenantService {
 		})();
 		return derived(this.state, ($state, set) => set($state));
 	}
-	
+
+	destroy() {
+		this.state.update((state: TenantState) => {
+			state.data = null;
+			state.error = null;
+			state.status = 'never';
+			return state;
+		});
+	}
 }

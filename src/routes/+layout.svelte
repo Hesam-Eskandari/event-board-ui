@@ -1,29 +1,25 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
-	import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 	import type { DataStatus } from '$lib/entities/data-status';
 	import { TenantStore } from '$lib/store/tenant.store';
 	import { onMount } from 'svelte';
+	import { TokenStore } from '$lib/store/token.store';
 
 	let { children } = $props();
 	const tenantService = TenantStore.getInstance();
+	const tokenStore = TokenStore.getInstance();
 	let tenant: TenantModel | null = $state(null);
 
 	onMount(() => {
-		const token: string | null = TokenSnapshotStore.getToken();
-		if (token != null) {
-			loadTenant(token);
-		}
+		loadTenant();
 	});
 
 
 
-	function loadTenant(token: string) {
+	function loadTenant(token?: string) {
 		tenantService.getTenant(token).subscribe((ds: DataStatus<TenantModel | null>) => {
-			if (ds.status === 'success') {
-				tenant = ds.data!;
-			}
+			tenant = ds.status === 'success' ? ds.data! : null;
 		});
 	}
 

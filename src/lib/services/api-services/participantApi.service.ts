@@ -5,27 +5,18 @@ import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
 import { PUBLIC_BASE_API_URL } from '$env/static/public';
 import type { ParticipantCreateDTO, ParticipantReadDTO, ParticipantUpdateDTO } from '$lib/services/api-services/dtos/participant';
-import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
+import { ApiService } from '$lib/services/api-services/api.service';
 
-export class ParticipantApiService implements ParticipantService {
-
-	private static addQParams(url: URL,  params: URLSearchParams): URL {
-		params.entries().forEach(([key, value]) => {
-			if (value != null) {
-				url.searchParams.set(key, String(value));
-			}
-		});
-		return url;
-	}
+export class ParticipantApiService extends ApiService implements ParticipantService {
 
 	addParticipant(p:ParticipantModel): Subscription<DataStatus<ParticipantModel | null>> {
 		return {
 			subscribe: (run, invalidate) => {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...ParticipantApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!ParticipantApiService.hasToken(params)) {
 					run({ data: null, error: new Error('token not found: cannot add participant without a workspace token'), status: 'error' });
 					return () => {};
 				}
@@ -62,10 +53,10 @@ export class ParticipantApiService implements ParticipantService {
 			subscribe(run, invalidate) {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...ParticipantApiService.getTokenQParam()
 				});
 				const url: URL = ParticipantApiService.addQParams(new URL(`${PUBLIC_BASE_API_URL}/participants/`), params);
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!ParticipantApiService.hasToken(params)) {
 					run({ data: [], error: new Error('token not found: cannot get participants without a workspace token'), status: 'error' });
 					return () => {};
 				}
@@ -101,9 +92,9 @@ export class ParticipantApiService implements ParticipantService {
 			subscribe(run, invalidate) {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...ParticipantApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!ParticipantApiService.hasToken(params)) {
 					run(new Error('token not found: cannot delete participant without a workspace token'));
 					return () => {};
 				}
@@ -133,9 +124,9 @@ export class ParticipantApiService implements ParticipantService {
 			subscribe(run: Subscriber<Error | null>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...ParticipantApiService.getTokenQParam()
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!ParticipantApiService.hasToken(params)) {
 					run(new Error('token not found: cannot edit participant without a workspace token'));
 					return () => {};
 				}

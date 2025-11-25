@@ -1,8 +1,8 @@
-import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 import { browser } from '$app/environment';
 import type { DataStatus } from '$lib/entities/data-status';
 import { TenantStore } from '$lib/store/tenant.store';
 import type { TenantService } from '$lib/services/tenant.service';
+import { TokenStore } from '$lib/store/token.store';
 
 export const load = async ({ url }) => {
 	if (browser) {
@@ -19,7 +19,8 @@ export const load = async ({ url }) => {
 			});
 		});
 		if (tenant != null) {
-			TokenSnapshotStore.saveToken(token);
+			const tokenStore = TokenStore.getInstance();
+			tokenStore.setToken(token);
 		}
 	}
 };

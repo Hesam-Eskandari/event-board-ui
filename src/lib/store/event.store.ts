@@ -8,13 +8,13 @@ import type { EventService } from '$lib/services/event.service';
 class EventState implements DataStatus<EventModel[]>{
 	error: Error | null = null;
 	data: EventModel[] = [];
-	status: Status = 'success';
+	status: Status = 'never';
 }
 
 export class EventStore implements EventService {
 	private static instance: EventStore | null = null;
 	private state: Writable<EventState> = writable(new EventState());
-	private stateFetchStatus: Status | 'never' = 'never';
+	private stateFetchStatus: Status = 'never';
 	private apiService: EventService = new EventApiService();
 	private constructor() {}
 
@@ -125,5 +125,14 @@ export class EventStore implements EventService {
 				})
 			})();
 		return derived(this.state, ($state, set) => set($state.error));
+	}
+
+	destroy() {
+		this.state.update((state: EventState) => {
+			state.data = [];
+			state.error = null;
+			state.status = 'never';
+			return state;
+		});
 	}
 }

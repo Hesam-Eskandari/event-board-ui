@@ -3,19 +3,10 @@ import { PUBLIC_BASE_API_URL } from '$env/static/public';
 import type { Subscription } from '$lib/entities/subscription';
 import type { DataStatus } from '$lib/entities/data-status';
 import type { Subscriber, Unsubscriber } from 'svelte/store';
-import { TokenSnapshotStore } from '$lib/store/token.snapshot.store';
 import type { TenantReadDTO } from '$lib/services/api-services/dtos/tenant';
+import { ApiService } from '$lib/services/api-services/api.service';
 
-export class TenantApiService implements TenantService {
-	
-	private static addQParams(url: URL,  params: URLSearchParams): URL {
-		params.entries().forEach(([key, value]) => {
-			if (value != null) {
-				url.searchParams.set(key, String(value));
-			}
-		});
-		return url;
-	}
+export class TenantApiService extends ApiService implements TenantService {
 	
 	getTenant(token: string):Subscription<DataStatus<TenantModel | null>> {
 		return {
@@ -24,7 +15,7 @@ export class TenantApiService implements TenantService {
 				const params = new URLSearchParams({
 					token
 				});
-				if (!TokenSnapshotStore.hasToken(params)) {
+				if (!TenantApiService.hasToken(params)) {
 					run({data: null, error: new Error('token not found: cannot get workspace info without a workspace token'), status: 'error'});
 					return () => {};
 				}
@@ -54,9 +45,9 @@ export class TenantApiService implements TenantService {
 			subscribe(run: Subscriber<DataStatus<TenantModel | null>>, invalidate?: () => void): Unsubscriber {
 				invalidate?.();
 				const params = new URLSearchParams({
-					...TokenSnapshotStore.getTokenQParam()
+					...TenantApiService.getTokenQParam()
 				});
-				if (TokenSnapshotStore.hasToken(params)) {
+				if (TenantApiService.hasToken(params)) {
 					run({data: null, error: new Error('failed generating workspace. workspace is already loaded.'), status: 'error'});
 					return () => {};
 				}

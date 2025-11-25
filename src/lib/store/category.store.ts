@@ -8,14 +8,14 @@ import { CategoryApiService } from '$lib/services/api-services/categoryApi.servi
 class CategoryState implements DataStatus<CategoryModel[]>{
 	error: Error | null = null;
 	data: CategoryModel[] = [];
-	status: Status = 'success';
+	status: Status = 'never';
 }
 
 export class CategoryStore implements CategoryService {
 	private static instance: CategoryStore | null = null;
 	private state: Writable<CategoryState> = writable(new CategoryState());
 	private apiService: CategoryService = new CategoryApiService();
-	private stateFetchStatus: Status | 'never' = 'never';
+	private stateFetchStatus: Status= 'never';
 	private constructor() {}
 
 	static getInstance(): CategoryStore {
@@ -124,5 +124,14 @@ export class CategoryStore implements CategoryService {
 				})
 			})();
 		return derived(this.state, ($state, set) => set($state.error));
+	}
+
+	destroy() {
+		this.state.update((state: CategoryState) => {
+			state.data = [];
+			state.error = null;
+			state.status = 'never';
+			return state;
+		});
 	}
 }
