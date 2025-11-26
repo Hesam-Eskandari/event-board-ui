@@ -20,6 +20,7 @@
 	function loadTenant(token?: string) {
 		tenantService.getTenant(token).subscribe((ds: DataStatus<TenantModel | null>) => {
 			tenant = ds.status === 'success' ? ds.data! : null;
+			console.log('tenant', tenant);
 		});
 	}
 

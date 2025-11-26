@@ -14,12 +14,13 @@
 	import { TokenStore } from '$lib/store/token.store';
 	import { CategoryStore } from '$lib/store/category.store';
 	import { EventStore } from '$lib/store/event.store';
+	import { ParticipantStore } from '$lib/store/participants.store';
 
 	const tenantStore = TenantStore.getInstance();
 	const tokenStore = TokenStore.getInstance();
 	const categoryStore = CategoryStore.getInstance();
 	const eventStore = EventStore.getInstance();
-	const participantStore = TenantStore.getInstance();
+	const participantStore = ParticipantStore.getInstance();
 	let tenant: TenantModel | null = $state(null);
 	let showLoadModal = $state(false);
 	let showCreateModal = $state(false);

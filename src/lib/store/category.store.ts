@@ -127,6 +127,7 @@ export class CategoryStore implements CategoryService {
 	}
 
 	destroy() {
+		this.stateFetchStatus = 'never';
 		this.state.update((state: CategoryState) => {
 			state.data = [];
 			state.error = null;

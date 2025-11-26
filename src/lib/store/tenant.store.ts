@@ -48,11 +48,7 @@ export class TenantStore implements TenantService {
 			const tokenStore = TokenStore.getInstance();
 			const inferredToken = tokenStore.getTokenSnapshot();
 			if (inferredToken === null) {
-				return derived(this.state, ($state, set) => set({
-					error: new Error('cannot request fetching tenant without a token'),
-					status: 'never',
-					data: null
-				}));
+				return derived(this.state, ($state, set) => set($state));
 			}
 			token = inferredToken;
 		}
@@ -77,11 +73,13 @@ export class TenantStore implements TenantService {
 	}
 
 	destroy() {
+		this.stateFetchStatus = 'never';
 		this.state.update((state: TenantState) => {
 			state.data = null;
 			state.error = null;
 			state.status = 'never';
 			return state;
 		});
+		console.log('destroyed tenant store');
 	}
 }

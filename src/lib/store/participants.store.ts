@@ -127,6 +127,7 @@ export class ParticipantStore implements ParticipantService {
 	}
 
 	destroy() {
+		this.stateFetchStatus = 'never';
 		this.state.update((state: ParticipantState) => {
 			state.data = [];
 			state.error = null;

@@ -128,6 +128,7 @@ export class EventStore implements EventService {
 	}
 
 	destroy() {
+		this.stateFetchStatus = 'never';
 		this.state.update((state: EventState) => {
 			state.data = [];
 			state.error = null;
