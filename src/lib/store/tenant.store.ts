@@ -80,6 +80,5 @@ export class TenantStore implements TenantService {
 			state.status = 'never';
 			return state;
 		});
-		console.log('destroyed tenant store');
 	}
 }

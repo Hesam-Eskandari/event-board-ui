@@ -4,11 +4,9 @@
 	import type { DataStatus } from '$lib/entities/data-status';
 	import { TenantStore } from '$lib/store/tenant.store';
 	import { onMount } from 'svelte';
-	import { TokenStore } from '$lib/store/token.store';
 
 	let { children } = $props();
 	const tenantService = TenantStore.getInstance();
-	const tokenStore = TokenStore.getInstance();
 	let tenant: TenantModel | null = $state(null);
 
 	onMount(() => {
@@ -20,7 +18,6 @@
 	function loadTenant(token?: string) {
 		tenantService.getTenant(token).subscribe((ds: DataStatus<TenantModel | null>) => {
 			tenant = ds.status === 'success' ? ds.data! : null;
-			console.log('tenant', tenant);
 		});
 	}
 
